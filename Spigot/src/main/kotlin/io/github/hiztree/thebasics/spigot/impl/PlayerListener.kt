@@ -62,7 +62,7 @@ class PlayerListener : Listener {
         TheBasics.eventBus.post(UserJoinEvent(SpigotUser(event.player)))
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     fun onQuit(event: PlayerQuitEvent) {
         TheBasics.eventBus.post(UserQuitEvent(event.player.toBasics()))
     }

@@ -3,21 +3,21 @@ package io.github.hiztree.thebasics.spigot
 import com.google.common.collect.Lists
 import io.github.hiztree.thebasics.core.TheBasics
 import io.github.hiztree.thebasics.core.api.Implementation
-import io.github.hiztree.thebasics.core.api.cmd.CommandException
 import io.github.hiztree.thebasics.core.api.cmd.CommandSpec
 import io.github.hiztree.thebasics.core.api.cmd.UsageException
-import io.github.hiztree.thebasics.core.api.cmd.annotation.Arg
 import io.github.hiztree.thebasics.core.api.cmd.sender.ConsoleSender
 import io.github.hiztree.thebasics.core.api.inventory.item.BasicItem
 import io.github.hiztree.thebasics.core.api.inventory.item.ItemType
 import io.github.hiztree.thebasics.core.api.inventory.item.ItemTypes
 import io.github.hiztree.thebasics.core.api.inventory.item.extra.EnchantType
 import io.github.hiztree.thebasics.core.api.user.User
-import io.github.hiztree.thebasics.core.listeners.UserListener
 import io.github.hiztree.thebasics.spigot.impl.PlayerListener
 import io.github.hiztree.thebasics.spigot.impl.SpigotConsoleSender
 import io.github.hiztree.thebasics.spigot.impl.SpigotUser
-import org.bukkit.*
+import org.bukkit.Bukkit
+import org.bukkit.ChatColor
+import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandMap
 import org.bukkit.command.CommandSender
@@ -33,8 +33,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.plugin.java.JavaPlugin
 import java.lang.reflect.Field
-import java.lang.reflect.InvocationTargetException
-import java.util.ArrayList
+import java.util.*
 
 class SpigotContainer : JavaPlugin(), Listener {
 
@@ -77,7 +76,7 @@ class SpigotContainer : JavaPlugin(), Listener {
         core.onlineUsers.add(SpigotUser(event.player))
     }
 
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.HIGH)
     fun onQuit(event: PlayerQuitEvent) {
         core.onlineUsers.remove(event.player.toBasics())
     }

@@ -17,7 +17,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlin:kotlin-reflect"
 
-    compile "org.spongepowered:configurate-hocon:3.7.2"
+    compile "org.spongepowered:configurate-hocon:4.0.0"
+    compile "org.spongepowered:configurate-extra-kotlin:4.0.0"
     compile 'com.google.guava:guava:21.0'
 }
 

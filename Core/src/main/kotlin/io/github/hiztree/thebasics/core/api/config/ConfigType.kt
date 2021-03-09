@@ -11,4 +11,5 @@ enum class ConfigType {
     };
 
     abstract fun getConfig(): BasicConfig
+
 }

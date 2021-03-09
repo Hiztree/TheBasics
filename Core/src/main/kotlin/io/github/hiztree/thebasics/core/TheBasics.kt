@@ -4,12 +4,13 @@ import com.google.common.collect.Lists
 import com.google.common.eventbus.EventBus
 import com.google.common.reflect.ClassPath
 import com.google.common.reflect.TypeToken
-import io.github.hiztree.thebasics.core.api.PluginContainer
 import io.github.hiztree.thebasics.core.api.Loader
+import io.github.hiztree.thebasics.core.api.PluginContainer
 import io.github.hiztree.thebasics.core.api.cmd.CommandContext
 import io.github.hiztree.thebasics.core.api.cmd.CommandContexts
 import io.github.hiztree.thebasics.core.api.cmd.CommandSpec
 import io.github.hiztree.thebasics.core.api.config.BasicConfig
+import io.github.hiztree.thebasics.core.api.config.BasicSerializers
 import io.github.hiztree.thebasics.core.api.lang.LangKey
 import java.util.*
 
@@ -41,8 +42,14 @@ abstract class TheBasics : PluginContainer {
         CommandContexts.registerKotlinContexts()
         CommandContexts.registerBasicContexts()
 
-        if(!getConfigDir().exists())
+        BasicSerializers.register()
+
+        if (!getConfigDir().exists())
             getConfigDir().mkdirs()
+
+        if (!getPlayerDir().exists())
+            getPlayerDir().mkdirs()
+
 
         generalConfig = BasicConfig("general.conf")
         langConfig = BasicConfig("lang.conf")

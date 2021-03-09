@@ -9,11 +9,12 @@ package io.github.hiztree.thebasics.core.api.config
 
 import com.google.common.collect.Lists
 import com.google.common.io.Files
-import com.google.common.reflect.TypeToken
 import io.github.hiztree.thebasics.core.TheBasics
-import ninja.leaping.configurate.ConfigurationNode
-import ninja.leaping.configurate.commented.CommentedConfigurationNode
-import ninja.leaping.configurate.hocon.HoconConfigurationLoader
+import org.spongepowered.configurate.CommentedConfigurationNode
+import org.spongepowered.configurate.ConfigurationNode
+import org.spongepowered.configurate.ConfigurationOptions
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader
+import org.spongepowered.configurate.serialize.TypeSerializerCollection
 import java.io.File
 import java.net.URL
 import java.net.URLConnection
@@ -39,7 +40,16 @@ open class BasicConfig(name: String, dir: File = TheBasics.instance.getConfigDir
             }
         }
 
-        loader = HoconConfigurationLoader.builder().setFile(file).build()
+        loader = HoconConfigurationLoader.builder()
+                .file(file)
+                .defaultOptions { opts: ConfigurationOptions ->
+                    opts.shouldCopyDefaults(true)
+                            .serializers { build: TypeSerializerCollection.Builder ->
+                                build.registerAll(BasicSerializers.serializers)
+                            }
+                }.prettyPrinting(true)
+                .build()
+
         rootNode = loader.load()
     }
 
@@ -51,8 +61,8 @@ open class BasicConfig(name: String, dir: File = TheBasics.instance.getConfigDir
         return rootNode
     }
 
-    open fun getNode(vararg path: Any): CommentedConfigurationNode {
-        return rootNode.getNode(path)
+    operator fun get(vararg path: Any): CommentedConfigurationNode {
+        return rootNode.node(path)
     }
 
     /**
@@ -67,5 +77,5 @@ open class BasicConfig(name: String, dir: File = TheBasics.instance.getConfigDir
  * Gets a list of strings.
  */
 fun ConfigurationNode.getStringList(): List<String> {
-    return this.getList(TypeToken.of(String::class.java), Lists.newArrayList())
+    return this.getList(String::class.java, Lists.newArrayList())
 }

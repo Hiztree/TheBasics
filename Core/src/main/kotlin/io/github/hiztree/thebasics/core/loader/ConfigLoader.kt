@@ -11,8 +11,7 @@ import com.google.common.collect.ImmutableSet
 import com.google.common.reflect.ClassPath
 import io.github.hiztree.thebasics.core.api.Loader
 import io.github.hiztree.thebasics.core.api.config.annotation.Section
-import ninja.leaping.configurate.objectmapping.ObjectMapper
-import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable
+import io.github.hiztree.thebasics.core.api.config.annotation.Setting
 
 class ConfigLoader : Loader() {
 
@@ -20,15 +19,41 @@ class ConfigLoader : Loader() {
         for (info in set.stream().filter { info: ClassPath.ClassInfo ->
             val loaded = info.load()
 
-            loaded.isAnnotationPresent(ConfigSerializable::class.java) && loaded.isAnnotationPresent(Section::class.java)
+            loaded.isAnnotationPresent(Section::class.java)
         }) {
             try {
-                val loaded = info.load()
+                val loaded: Class<*> = info.load()
                 val section = loaded.getAnnotation(Section::class.java)
+                val parentNode = section.type.getConfig().getRootNode()
+                val instance = loaded.newInstance()
+                var change = false
 
-                ObjectMapper.forClass(loaded).bindToNew().populate(section.type.getConfig().getRootNode())
-                section.type.getConfig().save()
+                for (declaredField in loaded.declaredFields) {
+                    if (declaredField.isAnnotationPresent(Setting::class.java)) {
+                        val setting = declaredField.getAnnotation(Setting::class.java)
+                        val path = if (setting.path.isEmpty()) declaredField.name.toLowerCase() else setting.path
+                        val node = parentNode.node(path)
+
+                        declaredField.isAccessible = true
+
+                        if (node.virtual()) {
+                            node.set(declaredField.get(instance))
+                            change = true
+                        } else {
+                            declaredField.set(instance, node.get(declaredField.genericType))
+                        }
+
+                        if (node.comment() == null && setting.comment.isNotEmpty()) {
+                            node.comment(setting.comment)
+                            change = true
+                        }
+                    }
+                }
+
+                if (change)
+                    section.type.getConfig().save()
             } catch (ignore: ReflectiveOperationException) {
+                ignore.printStackTrace()
                 continue
             }
         }

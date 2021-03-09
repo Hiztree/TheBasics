@@ -2,7 +2,6 @@ package io.github.hiztree.thebasics.spigot.impl
 
 import io.github.hiztree.thebasics.core.TheBasics
 import io.github.hiztree.thebasics.core.api.BasicTime
-import io.github.hiztree.thebasics.core.api.cmd.BasicTokens
 import io.github.hiztree.thebasics.core.api.config.BasicConfig
 import io.github.hiztree.thebasics.core.api.inventory.item.BasicItem
 import io.github.hiztree.thebasics.core.api.user.User
@@ -77,13 +76,13 @@ class SpigotUser(private val base: Player) : User, BasicConfig("${base.uniqueId}
     }
 
     override fun save() {
-        getNode("muteEnd").value = muteEnd
+        this["muteEnd"].set(muteEnd)
 
         super.save()
     }
 
     override fun serialize() {
-        this.muteEnd = getNode("muteEnd").getValue(BasicTokens.INSTANT_TOKEN)
+        this.muteEnd = this["muteEnd"].get(Instant::class.java)
     }
 
     override fun deserialize() {

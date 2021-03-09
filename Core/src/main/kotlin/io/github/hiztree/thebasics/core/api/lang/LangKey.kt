@@ -26,10 +26,10 @@ enum class LangKey(private val default: String) {
 
             for (value in values()) {
                 val name = value.name.toCamelCase()
-                val node = TheBasics.instance.langConfig.getRootNode().getNode(name)
+                val node = TheBasics.instance.langConfig.getRootNode().node(name)
 
-                if(node.isVirtual) {
-                    node.value = value.default
+                if (node.virtual()) {
+                    node.set(value.default)
                     update = true
                 }
 
