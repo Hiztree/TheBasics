@@ -31,9 +31,11 @@ interface PluginContainer {
     }
 
     fun getPlayerDir(): File {
-        return if(getImplementation() == Implementation.BUKKIT)
+        return if (getImplementation() == Implementation.BUKKIT)
             File("plugins/TheBasics/Players")
         else
             File("config/thebasics/players")
     }
+
+    fun getWorld(uniqueID: UUID): World?
 }

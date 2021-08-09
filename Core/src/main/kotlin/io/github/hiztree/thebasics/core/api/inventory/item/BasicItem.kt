@@ -12,7 +12,6 @@ import com.google.common.collect.Maps
 import io.github.hiztree.thebasics.core.api.inventory.item.extra.DyeColor
 import io.github.hiztree.thebasics.core.api.inventory.item.extra.EnchantType
 import io.github.hiztree.thebasics.core.api.inventory.item.extra.Enchantment
-import java.util.*
 
 class BasicItem(val itemType: ItemType, var qty: Int = 1, var name: String = "", var lore: List<String> = Lists.newArrayList(), val nbt: HashMap<String, String> = Maps.newHashMap()) {
 
@@ -40,7 +39,7 @@ class BasicItem(val itemType: ItemType, var qty: Int = 1, var name: String = "",
         //Format: <itemType> [qty] [enchant] [lore] [name]
         fun parseItem(type: ItemType, args: Array<out String>) : BasicItem? {
             if(args.isEmpty())
-                return null
+                return BasicItem(type, 1)
 
             var qty = 1
             var displayName = ""

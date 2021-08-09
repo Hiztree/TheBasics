@@ -1,20 +1,17 @@
 package io.github.hiztree.thebasics.spigot.impl
 
-import io.github.hiztree.thebasics.core.TheBasics
-import io.github.hiztree.thebasics.core.api.BasicTime
-import io.github.hiztree.thebasics.core.api.config.BasicConfig
+import io.github.hiztree.thebasics.core.api.Location
+import io.github.hiztree.thebasics.core.api.World
 import io.github.hiztree.thebasics.core.api.inventory.item.BasicItem
 import io.github.hiztree.thebasics.core.api.user.User
+import io.github.hiztree.thebasics.spigot.toBasics
 import io.github.hiztree.thebasics.spigot.toBukkit
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
-import java.time.Duration
-import java.time.Instant
 import java.util.*
 
-class SpigotUser(private val base: Player) : User, BasicConfig("${base.uniqueId}.conf", TheBasics.instance.getPlayerDir()) {
+class SpigotUser(private val base: Player) : User(base.uniqueId) {
 
-    private var muteEnd: Instant? = null
 
     override fun getName(): String {
         return base.name
@@ -56,36 +53,31 @@ class SpigotUser(private val base: Player) : User, BasicConfig("${base.uniqueId}
         base.kickPlayer(reason)
     }
 
-    override fun isMuted(): Boolean {
-        if(muteEnd != null) {
-            if(Duration.between(Instant.now(), muteEnd).isNegative) {
-                muteEnd = null
-                return false
-            }
-
-            return true
-        }
-
-        return false
+    override fun getXP(): Int {
+        return base.exp.toInt()
     }
 
-    override fun mute(duration: BasicTime, reason: String) {
-        super.mute(duration, reason)
-
-        muteEnd = duration.toInstant()
+    override fun getXPLevel(): Int {
+        return base.expToLevel
     }
 
-    override fun save() {
-        this["muteEnd"].set(muteEnd)
-
-        super.save()
+    override fun setXP(xp: Int) {
+        base.exp = xp.toFloat()
     }
 
-    override fun serialize() {
-        this.muteEnd = this["muteEnd"].get(Instant::class.java)
+    override fun setXPLevel(lvl: Int) {
+        base.level = lvl
     }
 
-    override fun deserialize() {
-        save()
+    override fun teleport(world: World, location: Location) {
+        base.teleport(location.toBukkit(world.toBukkit()))
+    }
+
+    override fun getLocation(): Location {
+        return base.location.toBasics()
+    }
+
+    override fun getWorld(): World {
+        return base.world.toBasics()
     }
 }

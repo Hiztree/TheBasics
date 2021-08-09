@@ -3,6 +3,7 @@ package io.github.hiztree.thebasics.spigot
 import com.google.common.collect.Lists
 import io.github.hiztree.thebasics.core.TheBasics
 import io.github.hiztree.thebasics.core.api.Implementation
+import io.github.hiztree.thebasics.core.api.World
 import io.github.hiztree.thebasics.core.api.cmd.CommandSpec
 import io.github.hiztree.thebasics.core.api.cmd.UsageException
 import io.github.hiztree.thebasics.core.api.cmd.sender.ConsoleSender
@@ -14,6 +15,7 @@ import io.github.hiztree.thebasics.core.api.user.User
 import io.github.hiztree.thebasics.spigot.impl.PlayerListener
 import io.github.hiztree.thebasics.spigot.impl.SpigotConsoleSender
 import io.github.hiztree.thebasics.spigot.impl.SpigotUser
+import io.github.hiztree.thebasics.spigot.impl.SpigotWorld
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Location
@@ -33,6 +35,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.plugin.java.JavaPlugin
 import java.lang.reflect.Field
+import java.lang.reflect.InvocationTargetException
 import java.util.*
 
 class SpigotContainer : JavaPlugin(), Listener {
@@ -50,6 +53,12 @@ class SpigotContainer : JavaPlugin(), Listener {
 
         override fun getImplementation(): Implementation {
             return Implementation.BUKKIT
+        }
+
+        override fun getWorld(uniqueID: UUID): World? {
+            val bukkitWorld = Bukkit.getWorld(uniqueID) ?: return null
+
+            return SpigotWorld(bukkitWorld)
         }
     }
 
@@ -92,9 +101,8 @@ class SpigotContainer : JavaPlugin(), Listener {
                             spec.performCmd(core.getConsoleSender(), args)
                     } catch (e: Exception) {
                         when(e) {
-                            !is UsageException -> {
+                            !is UsageException, !is InvocationTargetException -> {
                                 sender.sendMessage("${ChatColor.RED}There was an error performing the command.")
-                                println(e)
                             }
                         }
                     }
@@ -103,7 +111,11 @@ class SpigotContainer : JavaPlugin(), Listener {
                 }
 
                 override fun tabComplete(sender: CommandSender, alias: String, args: Array<out String>): MutableList<String> {
-                    return spec.tabComplete(sender.toBasics(), args)
+                    return if (sender is Player) {
+                        spec.tabComplete(sender.toBasics(), args)
+                    } else {
+                        spec.tabComplete(sender.toBasics(), args)
+                    }
                 }
             }
 
@@ -130,9 +142,21 @@ fun Location.toBasics(): io.github.hiztree.thebasics.core.api.Location {
     return io.github.hiztree.thebasics.core.api.Location(this.x, this.y, this.z)
 }
 
+fun World.toBukkit(): org.bukkit.World {
+    return Bukkit.getWorld(this.uniqueID)!!
+}
+
+fun org.bukkit.World.toBasics(): World {
+    return SpigotWorld(this)
+}
+
+fun io.github.hiztree.thebasics.core.api.Location.toBukkit(world: org.bukkit.World): Location {
+    return Location(world, this.x, this.y, this.z)
+}
+
 fun ItemStack.toBasics(): BasicItem {
     val meta = this.itemMeta
-    val item = if(meta != null) {
+    val item = if (meta != null) {
         BasicItem(this.type.toBasics(), this.amount, meta.displayName, meta.lore ?: emptyList())
     } else {
         BasicItem(this.type.toBasics(), this.amount)

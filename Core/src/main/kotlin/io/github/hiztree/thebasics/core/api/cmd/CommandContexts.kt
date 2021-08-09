@@ -5,30 +5,31 @@ import com.google.common.reflect.TypeToken
 import io.github.hiztree.thebasics.core.TheBasics
 import io.github.hiztree.thebasics.core.api.BasicTime
 import io.github.hiztree.thebasics.core.api.cmd.sender.CommandSender
-import io.github.hiztree.thebasics.core.api.inventory.item.extra.EnchantType
 import io.github.hiztree.thebasics.core.api.inventory.item.ItemType
 import io.github.hiztree.thebasics.core.api.inventory.item.ItemTypes
+import io.github.hiztree.thebasics.core.api.inventory.item.extra.EnchantType
 import io.github.hiztree.thebasics.core.api.inventory.item.extra.PotionType
 import io.github.hiztree.thebasics.core.api.user.User
+import io.github.hiztree.thebasics.core.api.user.data.Home
 
 object CommandContexts {
 
     fun registerJVMContexts() {
         TheBasics.registerCommandContext(object : CommandContext<Integer>(TypeToken.of(java.lang.Integer::class.java)) {
-            override fun complete(input: String): Integer {
+            override fun complete(sender: CommandSender, input: String): Integer {
                 return try {
                     Integer(input)
-                } catch(e: Exception) {
+                } catch (e: Exception) {
                     throw CommandException("number")
                 }
             }
         })
 
         TheBasics.registerCommandContext(object : CommandContext<java.lang.Double>(TypeToken.of(java.lang.Double::class.java)) {
-            override fun complete(input: String): java.lang.Double {
+            override fun complete(sender: CommandSender, input: String): java.lang.Double {
                 return try {
                     java.lang.Double(input)
-                } catch(e: Exception) {
+                } catch (e: Exception) {
                     throw CommandException("number")
                 }
             }
@@ -37,25 +38,25 @@ object CommandContexts {
 
     fun registerKotlinContexts() {
         TheBasics.registerCommandContext(object : CommandContext<String>(TypeToken.of(String::class.java)) {
-            override fun complete(input: String): String {
+            override fun complete(sender: CommandSender, input: String): String {
                 return input
             }
         })
 
         TheBasics.registerCommandContext(object : CommandContext<Int>(TypeToken.of(Int::class.java)) {
-            override fun complete(input: String): Int {
+            override fun complete(sender: CommandSender, input: String): Int {
                 return input.toIntOrNull() ?: throw CommandException("number")
             }
         })
 
         TheBasics.registerCommandContext(object : CommandContext<Double>(TypeToken.of(Double::class.java)) {
-            override fun complete(input: String): Double {
+            override fun complete(sender: CommandSender, input: String): Double {
                 return input.toDoubleOrNull() ?: throw CommandException("number")
             }
         })
 
         TheBasics.registerCommandContext(object : CommandContext<Boolean>(TypeToken.of(Boolean::class.java)) {
-            override fun complete(input: String): Boolean {
+            override fun complete(sender: CommandSender, input: String): Boolean {
                 return input.toBoolean()
             }
         })
@@ -63,7 +64,7 @@ object CommandContexts {
 
     fun registerBasicContexts() {
         TheBasics.registerCommandContext(object : CommandContext<User>(BasicTokens.USER_TOKEN) {
-            override fun complete(input: String): User {
+            override fun complete(sender: CommandSender, input: String): User {
                 return TheBasics.instance.getUser(input) ?: throw CommandException("user")
             }
 
@@ -84,7 +85,7 @@ object CommandContexts {
         })
 
         TheBasics.registerCommandContext(object : CommandContext<ItemType>(BasicTokens.ITEM_TYPE_TOKEN) {
-            override fun complete(input: String): ItemType {
+            override fun complete(sender: CommandSender, input: String): ItemType {
                 return ItemTypes.getByName(input) ?: throw CommandException("item type")
             }
 
@@ -102,31 +103,60 @@ object CommandContexts {
         })
 
         TheBasics.registerCommandContext(object : CommandContext<EnchantType>(BasicTokens.ENCHANT_TYPE_TOKEN) {
-            override fun complete(input: String): EnchantType {
+            override fun complete(sender: CommandSender, input: String): EnchantType {
                 return EnchantType.getByName(input) ?: throw CommandException("enchantment")
             }
         })
 
         TheBasics.registerCommandContext(object : CommandContext<PotionType>(BasicTokens.POTION_TYPE_TOKEN) {
-            override fun complete(input: String): PotionType {
+            override fun complete(sender: CommandSender, input: String): PotionType {
                 return PotionType.getByName(input) ?: throw CommandException("enchantment")
             }
         })
 
         TheBasics.registerCommandContext(object : CommandContext<JoinedString>(BasicTokens.JOINED_STRING_TOKEN) {
-            override fun complete(input: String): JoinedString {
+            override fun complete(sender: CommandSender, input: String): JoinedString {
                 return JoinedString.empty
             }
         })
 
-        TheBasics.registerCommandContext(object : CommandContext<BasicTime>(BasicTokens.TIME_TOKEN) {
-            override fun complete(input: String): BasicTime {
+        TheBasics.registerCommandContext(object :
+            CommandContext<BasicTime>(BasicTokens.TIME_TOKEN) {
+            override fun complete(sender: CommandSender, input: String): BasicTime {
                 val duration = BasicTime.parseTime(input)
 
-                if(duration.isZero())
+                if (duration.isZero())
                     throw CommandException("duration")
 
                 return duration
+            }
+        })
+
+        TheBasics.registerCommandContext(object : CommandContext<Home>(BasicTokens.HOME_TOKEN) {
+            override fun complete(sender: CommandSender, input: String): Home {
+                if (sender is User) {
+                    for (home in sender.homes) {
+                        if (home.name.equals(input, true))
+                            return home
+                    }
+                }
+
+                throw CommandException("home")
+            }
+
+            override fun tab(sender: CommandSender, last: String): List<String> {
+                if (sender !is User)
+                    return emptyList()
+
+                val matched = Lists.newArrayList<String>()
+
+                for (home in sender.homes) {
+                    if (home.name.startsWith(last)) {
+                        matched.add(home.name)
+                    }
+                }
+
+                return matched
             }
         })
     }

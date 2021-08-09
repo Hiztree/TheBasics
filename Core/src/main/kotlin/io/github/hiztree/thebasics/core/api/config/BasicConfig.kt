@@ -61,8 +61,8 @@ open class BasicConfig(name: String, dir: File = TheBasics.instance.getConfigDir
         return rootNode
     }
 
-    operator fun get(vararg path: Any): CommentedConfigurationNode {
-        return rootNode.node(path)
+    operator fun get(vararg path: String): CommentedConfigurationNode {
+        return rootNode.node(*path)
     }
 
     /**

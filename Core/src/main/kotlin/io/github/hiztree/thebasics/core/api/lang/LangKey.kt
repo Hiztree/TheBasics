@@ -17,7 +17,16 @@ enum class LangKey(private val default: String) {
     MUTE_NOTIFY("&cThe user &7{0} &chas been muted for &7{1}&c."),
     MUTE_ERROR("&cThat user is already muted!."),
     MUTED("&cYou have been muted for &7{0} &cfor &7{1}&c."),
-    MUTE_ATTEMPT("&cYou are still muted and cannot talk.");
+    MUTE_ATTEMPT("&cYou are still muted and cannot talk."),
+    XP("&7The player &6{0} &7xp is &6{1} &7and level is &6{2}&7."),
+    XP_GIVE_SENDER("&7You gave &6{0} &7levels to &6{1}&7."),
+    XP_GIVE_TARGET("&7You received &6{0} &7levels."),
+    XP_RMV_SENDER("&7You removed &6{0} &7levels to &6{1}&7."),
+    XP_RMV_TARGET("&7You lost &6{0} &7levels."),
+    INVALID_LVL("&cThe player does not have enough levels to remove!"),
+    HOME_LIST("&6Homes: &7{0}"),
+    REQ_HOME("&cYou must set a home before using this command!"),
+    SET_HOME("&7You have set a home called &6{0} &7at your current location.");
 
     companion object {
 

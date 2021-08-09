@@ -7,7 +7,6 @@ import io.github.hiztree.thebasics.core.TheBasics
 import io.github.hiztree.thebasics.core.api.cmd.annotation.Arg
 import io.github.hiztree.thebasics.core.api.cmd.sender.CommandSender
 import io.github.hiztree.thebasics.core.api.cmd.sender.ConsoleSender
-import io.github.hiztree.thebasics.core.api.user.User
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 
@@ -81,7 +80,7 @@ class CommandSpec(
                         if(arg.type == TypeToken.of(JoinedString::class.java)) {
                             args.add(JoinedString(rawArgs.copyOfRange(x, rawArgs.size)))
                         } else {
-                            args.add(arg.complete(rawArgs[x]))
+                            args.add(arg.complete(sender, rawArgs[x]))
                         }
                     } catch (e: Exception) {
                         when(e) {
@@ -129,12 +128,13 @@ class CommandSpec(
                 matchedCompletions.add(subCommand.label)
         }
 
-        if(parameters.isNotEmpty()) {
+        if (parameters.isNotEmpty() && (args.size - 1) < parameters.size) {
             val param = parameters[args.size - 1]
             val type = TheBasics.getCommandContext(TypeToken.of(param.type))
 
-            if (type != null)
+            if (type != null) {
                 matchedCompletions.addAll(type.tab(sender, lastWord))
+            }
         }
 
         matchedCompletions.sortWith(String.CASE_INSENSITIVE_ORDER)
