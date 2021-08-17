@@ -67,17 +67,17 @@ class SpigotContainer : JavaPlugin(), Listener {
     override fun onEnable() {
         core.init()
 
+        Bukkit.getPluginManager().registerEvents(PlayerListener(), this)
+        Bukkit.getPluginManager().registerEvents(this, this)
+
         val mapField: Field = Bukkit.getServer().javaClass.getDeclaredField("commandMap")
         mapField.isAccessible = true
 
-        commandMap =  mapField.get(Bukkit.getServer()) as CommandMap
+        commandMap = mapField.get(Bukkit.getServer()) as CommandMap
 
         for (command in core.commands) {
             registerCommand(command)
         }
-
-        Bukkit.getPluginManager().registerEvents(PlayerListener(), this)
-        Bukkit.getPluginManager().registerEvents(this, this)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -92,15 +92,21 @@ class SpigotContainer : JavaPlugin(), Listener {
 
     private fun registerCommand(spec: CommandSpec) {
         try {
-            val command = object: Command(spec.label, spec.desc, spec.usage, emptyList()) {
-                override fun execute(sender: CommandSender, commandLabel: String, args: Array<out String>): Boolean {
+            val command = object : Command(spec.label, spec.desc, spec.usage, spec.aliases) {
+                override fun execute(
+                    sender: CommandSender,
+                    commandLabel: String,
+                    args: Array<out String>
+                ): Boolean {
                     try {
                         if (sender is Player)
                             core.getUser(sender.name)?.let { spec.performCmd(it, args) }
                         else if (sender is ConsoleCommandSender)
                             spec.performCmd(core.getConsoleSender(), args)
                     } catch (e: Exception) {
-                        when(e) {
+                        e.printStackTrace()
+
+                        when (e) {
                             !is UsageException, !is InvocationTargetException -> {
                                 sender.sendMessage("${ChatColor.RED}There was an error performing the command.")
                             }
@@ -119,7 +125,7 @@ class SpigotContainer : JavaPlugin(), Listener {
                 }
             }
 
-            commandMap.register(spec.label, "thebasics", command)
+            commandMap.register(spec.label, "basic", command)
         } catch (e: Exception) {
             //TODO Error handling
         }

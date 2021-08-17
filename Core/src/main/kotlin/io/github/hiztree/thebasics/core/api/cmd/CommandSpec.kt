@@ -12,6 +12,7 @@ import java.lang.reflect.Method
 
 class CommandSpec(
     val label: String,
+    val aliases: List<String>,
     val desc: String,
     parentLabel: String,
     private val senderClass: Class<out CommandSender>,
@@ -68,6 +69,7 @@ class CommandSpec(
 
                 for (x in parameters.indices) {
                     val param = parameters[x]
+                    val argAnnotation = param.getAnnotation(Arg::class.java)
 
                     val arg = TheBasics.getCommandContext(TypeToken.of(param.type))
 
@@ -80,13 +82,15 @@ class CommandSpec(
                         if(arg.type == TypeToken.of(JoinedString::class.java)) {
                             args.add(JoinedString(rawArgs.copyOfRange(x, rawArgs.size)))
                         } else {
-                            args.add(arg.complete(sender, rawArgs[x]))
+                            try {
+                                args.add(arg.complete(sender, rawArgs[x]))
+                            } catch (e: Exception) {
+                                throw e
+                            }
                         }
                     } catch (e: Exception) {
                         when(e) {
                             is CommandException, is ArrayIndexOutOfBoundsException -> {
-                                val argAnnotation = param.getAnnotation(Arg::class.java)
-
                                 if (argAnnotation != null && !argAnnotation.optional) {
                                     sender.sendMsg("&cYou must specify a valid: &7${e.message}&c.")
                                     return

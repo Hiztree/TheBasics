@@ -3,10 +3,12 @@ package io.github.hiztree.thebasics.spigot.impl
 import io.github.hiztree.thebasics.core.api.Location
 import io.github.hiztree.thebasics.core.api.World
 import io.github.hiztree.thebasics.core.api.inventory.item.BasicItem
+import io.github.hiztree.thebasics.core.api.user.Gamemode
 import io.github.hiztree.thebasics.core.api.user.User
 import io.github.hiztree.thebasics.spigot.toBasics
 import io.github.hiztree.thebasics.spigot.toBukkit
 import org.bukkit.ChatColor
+import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -79,5 +81,13 @@ class SpigotUser(private val base: Player) : User(base.uniqueId) {
 
     override fun getWorld(): World {
         return base.world.toBasics()
+    }
+
+    override fun getGamemode(): Gamemode {
+        return Gamemode.getByInput(base.gameMode.name)!!
+    }
+
+    override fun setGamemode(gamemode: Gamemode) {
+        base.gameMode = GameMode.valueOf(gamemode.name)
     }
 }

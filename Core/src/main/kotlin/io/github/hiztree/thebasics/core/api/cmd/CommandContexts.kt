@@ -9,6 +9,7 @@ import io.github.hiztree.thebasics.core.api.inventory.item.ItemType
 import io.github.hiztree.thebasics.core.api.inventory.item.ItemTypes
 import io.github.hiztree.thebasics.core.api.inventory.item.extra.EnchantType
 import io.github.hiztree.thebasics.core.api.inventory.item.extra.PotionType
+import io.github.hiztree.thebasics.core.api.user.Gamemode
 import io.github.hiztree.thebasics.core.api.user.User
 import io.github.hiztree.thebasics.core.api.user.data.Home
 
@@ -153,6 +154,34 @@ object CommandContexts {
                 for (home in sender.homes) {
                     if (home.name.startsWith(last)) {
                         matched.add(home.name)
+                    }
+                }
+
+                return matched
+            }
+        })
+
+
+        TheBasics.registerCommandContext(object :
+            CommandContext<Gamemode>(BasicTokens.GAMEMODE_TOKEN) {
+            override fun complete(sender: CommandSender, input: String): Gamemode {
+                for (value in Gamemode.values()) {
+                    if (value.name.equals(input, true)) {
+                        return value
+                    }
+                }
+
+                throw CommandException("gamemode")
+            }
+
+            override fun tab(sender: CommandSender, last: String): List<String> {
+                val matched = Lists.newArrayList<String>()
+
+                for (mode in Gamemode.values()) {
+                    val name = mode.name.toLowerCase()
+
+                    if (name.startsWith(last)) {
+                        matched.add(name)
                     }
                 }
 

@@ -7,19 +7,14 @@ import io.github.hiztree.thebasics.core.api.lang.LangKey
 import io.github.hiztree.thebasics.core.api.user.User
 import io.github.hiztree.thebasics.core.api.user.data.Home
 
-@BasicCmd("sethome", "Sets your current location as a home.")
-class SetHomeCmd {
+@BasicCmd("unsethome", "Removes a home by its name.")
+class UnSetHomeCmd {
 
     @DefaultCmd
-    fun setHomeCmd(sender: User, @Arg("name") name: String) {
-        if (sender.homes.find { it.name.equals(name, true) } != null) {
-            sender.sendMsg(LangKey.HOME_IS_EXIST_ERROR, name)
-            return
-        }
-
-        sender.homes.add(Home(name, sender.getLocation(), sender.getWorld()))
+    fun unSetHomeCmd(sender: User, @Arg("home") home: Home) {
+        sender.homes.remove(home)
         sender.save()
 
-        sender.sendMsg(LangKey.SET_HOME, name)
+        sender.sendMsg(LangKey.UN_SET_HOME, home.name)
     }
 }

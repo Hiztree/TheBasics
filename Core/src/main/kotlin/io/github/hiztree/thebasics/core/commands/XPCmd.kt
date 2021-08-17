@@ -9,7 +9,7 @@ import io.github.hiztree.thebasics.core.api.cmd.sender.CommandSender
 import io.github.hiztree.thebasics.core.api.lang.LangKey
 import io.github.hiztree.thebasics.core.api.user.User
 
-@BasicCmd("xp", "Get or modify a users xp.")
+@BasicCmd("xp|exp", "Get or modify a users xp.")
 class XPCmd {
 
     @DefaultCmd

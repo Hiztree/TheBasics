@@ -20,6 +20,10 @@ abstract class User(uniqueId: UUID) : OfflineUser, CommandSender, Serializable,
     private var muteEnd: Instant? = null
     val homes: MutableList<Home> = mutableListOf()
 
+    init {
+        deserialize()
+    }
+
     abstract fun getHealth(): Double
     abstract fun setHealth(health: Double)
 
@@ -63,20 +67,24 @@ abstract class User(uniqueId: UUID) : OfflineUser, CommandSender, Serializable,
 
     abstract fun getWorld(): World
 
+    abstract fun getGamemode(): Gamemode
+
+    abstract fun setGamemode(gamemode: Gamemode)
+
     override fun save() {
-        deserialize()
+        serialize()
         super.save()
     }
 
     override fun serialize() {
+        this["muteEnd"].set(muteEnd)
+        this["homes"].setList(Home::class.java, homes)
+    }
+
+    override fun deserialize() {
         this.muteEnd = this["muteEnd"].get(Instant::class.java)
         this.homes.addAll(
             this["homes"].getList(Home::class.java)?.toMutableList() ?: mutableListOf()
         )
-    }
-
-    override fun deserialize() {
-        this["muteEnd"].set(muteEnd)
-        this["homes"].setList(Home::class.java, homes)
     }
 }

@@ -26,7 +26,11 @@ enum class LangKey(private val default: String) {
     INVALID_LVL("&cThe player does not have enough levels to remove!"),
     HOME_LIST("&6Homes: &7{0}"),
     REQ_HOME("&cYou must set a home before using this command!"),
-    SET_HOME("&7You have set a home called &6{0} &7at your current location.");
+    SET_HOME("&7You have set a home called &6{0} &7at your current location."),
+    UN_SET_HOME("&7You have removed a home called &6{0}&7."),
+    HOME_IS_EXIST_ERROR("&cThe home called &7{0} &calready exist!"),
+    GAMEMODE_CHANGE_SENDER("&7You have changed the user &6{0} &7game mode to &6{1}&7."),
+    GAMEMODE_CHANGE_TARGET("&7Your game mode has been changed to &6{0}&7.");
 
     companion object {
 

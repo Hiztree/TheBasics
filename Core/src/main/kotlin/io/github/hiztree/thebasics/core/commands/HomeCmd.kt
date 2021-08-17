@@ -7,7 +7,7 @@ import io.github.hiztree.thebasics.core.api.lang.LangKey
 import io.github.hiztree.thebasics.core.api.user.User
 import io.github.hiztree.thebasics.core.api.user.data.Home
 
-@BasicCmd("home", "Teleport to your home.")
+@BasicCmd("home|homes", "Teleport to your home.")
 class HomeCmd {
 
     @DefaultCmd

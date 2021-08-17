@@ -40,7 +40,13 @@ class CommandLoader : Loader() {
                     if (declaredMethod.isAnnotationPresent(SubCmd::class.java)) {
                         val subCmd = declaredMethod.getAnnotation(SubCmd::class.java)
 
-                        loadCmdSpec(subCmd.label,basicCmd.desc, defaultCmd.label, instance, declaredMethod)?.let { defaultCmd.subCommands.add(it) }
+                        loadCmdSpec(
+                            subCmd.label,
+                            basicCmd.desc,
+                            defaultCmd.label,
+                            instance,
+                            declaredMethod
+                        )?.let { defaultCmd.subCommands.add(it) }
                     }
                 }
 
@@ -59,7 +65,25 @@ class CommandLoader : Loader() {
             CommandSender::class.java.isAssignableFrom(it.type)
         } ?: return null
 
-        return CommandSpec(label, desc, parentLabel, sender.type as Class<out CommandSender>, instance, method)
+        var actualLabel = label
+
+        val aliases = if (label.contains("|")) {
+            val split = label.split("|")
+            actualLabel = split[0]
+            label.split("|").drop(1)
+        } else {
+            emptyList()
+        }
+
+        return CommandSpec(
+            actualLabel,
+            aliases,
+            desc,
+            parentLabel,
+            sender.type as Class<out CommandSender>,
+            instance,
+            method
+        )
     }
 
 }
