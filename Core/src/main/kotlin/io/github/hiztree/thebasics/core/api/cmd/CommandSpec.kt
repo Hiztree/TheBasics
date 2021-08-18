@@ -7,7 +7,7 @@ import io.github.hiztree.thebasics.core.TheBasics
 import io.github.hiztree.thebasics.core.api.cmd.annotation.Arg
 import io.github.hiztree.thebasics.core.api.cmd.sender.CommandSender
 import io.github.hiztree.thebasics.core.api.cmd.sender.ConsoleSender
-import java.lang.reflect.InvocationTargetException
+import io.github.hiztree.thebasics.core.api.lang.LangKey
 import java.lang.reflect.Method
 
 class CommandSpec(
@@ -92,7 +92,7 @@ class CommandSpec(
                         when(e) {
                             is CommandException, is ArrayIndexOutOfBoundsException -> {
                                 if (argAnnotation != null && !argAnnotation.optional) {
-                                    sender.sendMsg("&cYou must specify a valid: &7${e.message}&c.")
+                                    sender.sendMsg(LangKey.INVALID_USAGE, e.message!!)
                                     return
                                 }
 
@@ -104,7 +104,8 @@ class CommandSpec(
 
                 try {
                     method.invoke(instance, *args.toTypedArray())
-                } catch(ignore: InvocationTargetException) {}
+                } catch (ignore: Exception) {
+                }
             }
         } else {
             if (reqParams > 1) {
@@ -112,9 +113,13 @@ class CommandSpec(
                 return
             }
 
-            val nullArray = arrayOfNulls<Any>(parameters.size) // Work around for when there is only optional args.
+            val nullArray =
+                arrayOfNulls<Any>(parameters.size) // Work around for when there is only optional args.
 
-            method.invoke(instance, sender, *nullArray)
+            try {
+                method.invoke(instance, sender, *nullArray)
+            } catch (ignore: Exception) {
+            }
         }
     }
 

@@ -3,6 +3,7 @@ package io.github.hiztree.thebasics.spigot
 import com.google.common.collect.Lists
 import io.github.hiztree.thebasics.core.TheBasics
 import io.github.hiztree.thebasics.core.api.Implementation
+import io.github.hiztree.thebasics.core.api.Kit
 import io.github.hiztree.thebasics.core.api.World
 import io.github.hiztree.thebasics.core.api.cmd.CommandSpec
 import io.github.hiztree.thebasics.core.api.cmd.UsageException
@@ -12,6 +13,7 @@ import io.github.hiztree.thebasics.core.api.inventory.item.ItemType
 import io.github.hiztree.thebasics.core.api.inventory.item.ItemTypes
 import io.github.hiztree.thebasics.core.api.inventory.item.extra.EnchantType
 import io.github.hiztree.thebasics.core.api.user.User
+import io.github.hiztree.thebasics.core.configs.KitConfig
 import io.github.hiztree.thebasics.spigot.impl.PlayerListener
 import io.github.hiztree.thebasics.spigot.impl.SpigotConsoleSender
 import io.github.hiztree.thebasics.spigot.impl.SpigotUser
@@ -78,6 +80,21 @@ class SpigotContainer : JavaPlugin(), Listener {
         for (command in core.commands) {
             registerCommand(command)
         }
+
+        val item =
+            BasicItem(ItemTypes.DIAMOND, 2, "&6Derp Squad", arrayListOf("Derp", "This", "Stuff"))
+        item.enchantments.add(
+            io.github.hiztree.thebasics.core.api.inventory.item.extra.Enchantment(
+                EnchantType.AQUA_AFFINITY,
+                2
+            )
+        )
+
+        KitConfig.kits.add(Kit("test", 86400, arrayListOf(BasicItem(ItemTypes.DIAMOND), item)))
+
+        TheBasics.instance.kitConfig.getRootNode().node("kits")
+            .setList(Kit::class.java, KitConfig.kits)
+        TheBasics.instance.kitConfig.save()
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

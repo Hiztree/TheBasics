@@ -28,6 +28,35 @@ class BasicItem(val itemType: ItemType, var qty: Int = 1, var name: String = "",
         return item
     }
 
+    override fun toString(): String {
+        val sb = StringBuilder()
+
+        sb.append(itemType.name).append(" ")
+            .append(qty).append(" ")
+
+
+        val loreSb = StringBuilder()
+
+        if (lore.isNotEmpty()) {
+            loreSb.append("lore:")
+
+            for (s in lore) {
+                loreSb.append(s.replace(" ", "_")).append("|")
+            }
+
+            sb.append(loreSb.toString().removeSuffix("|")).append(" ")
+        }
+
+        if (name.isNotBlank())
+            sb.append("name:").append(name.replace(" ", "_")).append(" ")
+
+        for (enchantment in enchantments) {
+            sb.append("${enchantment.type.id}:${enchantment.level}").append(" ")
+        }
+
+        return sb.toString().removeSuffix(" ")
+    }
+
     companion object {
         fun createUserHead(name: String): BasicItem {
             val itemStack = BasicItem(ItemTypes.SKULL, 1)

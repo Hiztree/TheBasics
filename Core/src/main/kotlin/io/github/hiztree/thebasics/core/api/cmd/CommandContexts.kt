@@ -4,6 +4,7 @@ import com.google.common.collect.Lists
 import com.google.common.reflect.TypeToken
 import io.github.hiztree.thebasics.core.TheBasics
 import io.github.hiztree.thebasics.core.api.BasicTime
+import io.github.hiztree.thebasics.core.api.Kit
 import io.github.hiztree.thebasics.core.api.cmd.sender.CommandSender
 import io.github.hiztree.thebasics.core.api.inventory.item.ItemType
 import io.github.hiztree.thebasics.core.api.inventory.item.ItemTypes
@@ -12,6 +13,7 @@ import io.github.hiztree.thebasics.core.api.inventory.item.extra.PotionType
 import io.github.hiztree.thebasics.core.api.user.Gamemode
 import io.github.hiztree.thebasics.core.api.user.User
 import io.github.hiztree.thebasics.core.api.user.data.Home
+import io.github.hiztree.thebasics.core.configs.KitConfig
 
 object CommandContexts {
 
@@ -182,6 +184,34 @@ object CommandContexts {
 
                     if (name.startsWith(last)) {
                         matched.add(name)
+                    }
+                }
+
+                return matched
+            }
+        })
+
+        TheBasics.registerCommandContext(object :
+            CommandContext<Kit>(BasicTokens.KIT_TOKEN) {
+            override fun complete(sender: CommandSender, input: String): Kit {
+                for (value in KitConfig.kits) {
+                    if (value.name.equals(input, true)) {
+                        return value
+                    }
+                }
+
+                throw CommandException("kit")
+            }
+
+            override fun tab(sender: CommandSender, last: String): List<String> {
+                val matched = Lists.newArrayList<String>()
+
+                for (kit in KitConfig.kits) {
+                    val name = kit.name.toLowerCase()
+
+                    if (name.startsWith(last)) {
+                        if (sender.hasPermission("thebasics.kit.$name"))
+                            matched.add(name)
                     }
                 }
 

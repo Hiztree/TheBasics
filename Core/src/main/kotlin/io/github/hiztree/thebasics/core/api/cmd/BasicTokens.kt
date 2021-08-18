@@ -2,6 +2,7 @@ package io.github.hiztree.thebasics.core.api.cmd
 
 import com.google.common.reflect.TypeToken
 import io.github.hiztree.thebasics.core.api.BasicTime
+import io.github.hiztree.thebasics.core.api.Kit
 import io.github.hiztree.thebasics.core.api.inventory.item.ItemType
 import io.github.hiztree.thebasics.core.api.inventory.item.extra.EnchantType
 import io.github.hiztree.thebasics.core.api.inventory.item.extra.PotionType
@@ -21,4 +22,5 @@ object BasicTokens {
     val INSTANT_TOKEN: TypeToken<Instant> = TypeToken.of(Instant::class.java)
     val HOME_TOKEN: TypeToken<Home> = TypeToken.of(Home::class.java)
     val GAMEMODE_TOKEN: TypeToken<Gamemode> = TypeToken.of(Gamemode::class.java)
+    val KIT_TOKEN: TypeToken<Kit> = TypeToken.of(Kit::class.java)
 }

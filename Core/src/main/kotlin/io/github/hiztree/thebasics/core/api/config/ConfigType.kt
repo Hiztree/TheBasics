@@ -8,6 +8,11 @@ enum class ConfigType {
         override fun getConfig(): BasicConfig {
             return TheBasics.instance.generalConfig
         }
+    },
+    KIT {
+        override fun getConfig(): BasicConfig {
+            return TheBasics.instance.kitConfig
+        }
     };
 
     abstract fun getConfig(): BasicConfig

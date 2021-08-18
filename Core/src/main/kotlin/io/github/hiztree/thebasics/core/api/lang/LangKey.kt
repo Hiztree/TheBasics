@@ -5,6 +5,7 @@ import io.github.hiztree.thebasics.core.TheBasics
 enum class LangKey(private val default: String) {
 
     NO_PERMISSION("&cYou do not have permission to perform this command!"),
+    INVALID_USAGE("&cYou must specify a valid: &7{0}&c!"),
     HEALED_TARGET("&7You have healed &6{0}&7."),
     HEALED_SENDER("&7You have been healed by &6{0}&7."),
     HEAL_SELF("&7You have healed yourself."),
@@ -30,7 +31,11 @@ enum class LangKey(private val default: String) {
     UN_SET_HOME("&7You have removed a home called &6{0}&7."),
     HOME_IS_EXIST_ERROR("&cThe home called &7{0} &calready exist!"),
     GAMEMODE_CHANGE_SENDER("&7You have changed the user &6{0} &7game mode to &6{1}&7."),
-    GAMEMODE_CHANGE_TARGET("&7Your game mode has been changed to &6{0}&7.");
+    GAMEMODE_CHANGE_TARGET("&7Your game mode has been changed to &6{0}&7."),
+    KIT_GIVE_SENDER("&7You gave the &6{0} &7kit to &6{1}&7."),
+    KIT_GIVE_TARGET("&7You have received the kit &6{0}&7."),
+    KIT_INTERVAL("&cYou must wait &7{0} &cuntil you can use the &7{1} &ckit again!"),
+    KIT_PERMISSION("&cYou do not have access to this kit!");
 
     companion object {
 

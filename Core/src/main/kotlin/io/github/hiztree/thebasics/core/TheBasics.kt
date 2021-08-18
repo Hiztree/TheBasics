@@ -12,7 +12,9 @@ import io.github.hiztree.thebasics.core.api.cmd.CommandSpec
 import io.github.hiztree.thebasics.core.api.config.BasicConfig
 import io.github.hiztree.thebasics.core.api.config.BasicSerializers
 import io.github.hiztree.thebasics.core.api.lang.LangKey
-import java.util.*
+import java.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.toKotlinDuration
 
 abstract class TheBasics : PluginContainer {
 
@@ -20,6 +22,7 @@ abstract class TheBasics : PluginContainer {
 
     lateinit var generalConfig: BasicConfig
     lateinit var langConfig: BasicConfig
+    lateinit var kitConfig: BasicConfig
 
     companion object {
         lateinit var instance: TheBasics
@@ -50,9 +53,9 @@ abstract class TheBasics : PluginContainer {
         if (!getPlayerDir().exists())
             getPlayerDir().mkdirs()
 
-
         generalConfig = BasicConfig("general.conf")
         langConfig = BasicConfig("lang.conf")
+        kitConfig = BasicConfig("kit.conf")
 
         val registeredClasses = ClassPath.from(TheBasics::class.java.classLoader)
                 .getTopLevelClassesRecursive("io.github.hiztree.thebasics.core")
@@ -69,4 +72,9 @@ abstract class TheBasics : PluginContainer {
 
         LangKey.load()
     }
+}
+
+@OptIn(ExperimentalTime::class)
+fun Duration.pretty(): String {
+    return this.toKotlinDuration().toIsoString().replace("PT", "")
 }
