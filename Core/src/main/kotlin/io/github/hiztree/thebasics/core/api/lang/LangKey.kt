@@ -35,7 +35,11 @@ enum class LangKey(private val default: String) {
     KIT_GIVE_SENDER("&7You gave the &6{0} &7kit to &6{1}&7."),
     KIT_GIVE_TARGET("&7You have received the kit &6{0}&7."),
     KIT_INTERVAL("&cYou must wait &7{0} &cuntil you can use the &7{1} &ckit again!"),
-    KIT_PERMISSION("&cYou do not have access to this kit!");
+    KIT_PERMISSION("&cYou do not have access to this kit!"),
+    TELEPORT_HERE_TARGET("&7You have been teleported to &6{0}'s &7location."),
+    TELEPORT_SENDER("&7You have teleported to &6{0}'s &7location."),
+    NO_SPAWN("&cThe server does not have a set spawn!"),
+    SET_SPAWN("&7You have set the servers spawn at your current location.");
 
     companion object {
 

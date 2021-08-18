@@ -23,6 +23,7 @@ abstract class TheBasics : PluginContainer {
     lateinit var generalConfig: BasicConfig
     lateinit var langConfig: BasicConfig
     lateinit var kitConfig: BasicConfig
+    lateinit var dataConfig: BasicConfig
 
     companion object {
         lateinit var instance: TheBasics
@@ -56,6 +57,7 @@ abstract class TheBasics : PluginContainer {
         generalConfig = BasicConfig("general.conf")
         langConfig = BasicConfig("lang.conf")
         kitConfig = BasicConfig("kit.conf")
+        dataConfig = BasicConfig("data.conf")
 
         val registeredClasses = ClassPath.from(TheBasics::class.java.classLoader)
                 .getTopLevelClassesRecursive("io.github.hiztree.thebasics.core")
