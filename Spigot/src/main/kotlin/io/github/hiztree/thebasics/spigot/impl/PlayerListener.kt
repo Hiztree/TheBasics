@@ -77,7 +77,12 @@ class PlayerListener : Listener {
         if (event.breeder is Player) {
             val user = event.breeder as Player
 
-            TheBasics.eventBus.post(UserBreedEvent(user.toBasics(), event.entity.type.typeId.toInt()))
+            TheBasics.eventBus.post(
+                UserBreedEvent(
+                    user.toBasics(),
+                    event.entity.type.typeId.toInt()
+                )
+            )
         }
     }
 
@@ -89,7 +94,12 @@ class PlayerListener : Listener {
     @EventHandler
     fun onPickUpItem(event: EntityPickupItemEvent) {
         if (event.entity is Player) {
-            TheBasics.eventBus.post(UserPickupItemEvent((event.entity as Player).toBasics(), event.item.itemStack.toBasics()))
+            TheBasics.eventBus.post(
+                UserPickupItemEvent(
+                    (event.entity as Player).toBasics(),
+                    event.item.itemStack.toBasics()
+                )
+            )
         }
     }
 
@@ -134,7 +144,13 @@ class PlayerListener : Listener {
                 val stack: ItemStack = event.contents.getItem(1) ?: return
                 val p: Potion = Potion.fromItemStack(stack)
 
-                TheBasics.eventBus.post(PotionType.getByName(p.type.name)?.let { io.github.hiztree.thebasics.core.api.event.BrewEvent(user.toBasics(), it) })
+                TheBasics.eventBus.post(
+                    PotionType.getByName(p.type.name)?.let {
+                        io.github.hiztree.thebasics.core.api.event.BrewEvent(
+                            user.toBasics(),
+                            it
+                        )
+                    })
             }
         }
     }
@@ -145,7 +161,12 @@ class PlayerListener : Listener {
             if (event.inventory.viewers[0] is Player) {
                 val user = event.inventory.viewers[0] as Player
 
-                TheBasics.eventBus.post(CraftEvent(user.toBasics(), event.inventory.result!!.toBasics()))
+                TheBasics.eventBus.post(
+                    CraftEvent(
+                        user.toBasics(),
+                        event.inventory.result!!.toBasics()
+                    )
+                )
             }
         }
     }
@@ -158,13 +179,24 @@ class PlayerListener : Listener {
 
             val type = EnchantType.getByName(key.name) ?: continue
 
-            TheBasics.eventBus.post(EnchantEvent(event.enchanter.toBasics(), event.item.toBasics(), type))
+            TheBasics.eventBus.post(
+                EnchantEvent(
+                    event.enchanter.toBasics(),
+                    event.item.toBasics(),
+                    type
+                )
+            )
         }
     }
 
     @EventHandler
     fun onForge(event: FurnaceExtractEvent) {
-        TheBasics.eventBus.post(ForgeEvent(event.player.toBasics(), BasicItem(event.itemType.toBasics(), event.itemAmount)))
+        TheBasics.eventBus.post(
+            ForgeEvent(
+                event.player.toBasics(),
+                BasicItem(event.itemType.toBasics(), event.itemAmount)
+            )
+        )
     }
 
     @EventHandler
@@ -172,7 +204,7 @@ class PlayerListener : Listener {
         val chatEvent = UserChatEvent(event.player.toBasics(), event.message)
         TheBasics.eventBus.post(chatEvent)
 
-        if(chatEvent.msg == null)
+        if (chatEvent.msg == null)
             event.isCancelled = true
         else
             event.message = chatEvent.msg!!

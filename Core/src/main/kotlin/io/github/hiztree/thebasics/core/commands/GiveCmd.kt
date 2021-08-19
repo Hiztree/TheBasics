@@ -15,8 +15,16 @@ import io.github.hiztree.thebasics.core.api.user.User
 class GiveCmd {
 
     @DefaultCmd
-    fun giveCmd(sender: CommandSender, @Arg("target") target: User, @Arg("type") type: ItemType, @Arg("spec", true) input: JoinedString) {
-        val item = BasicItem.parseItem(type, input.args) ?: throw UsageException(sender, LangKey.INVALID_ITEM)
+    fun giveCmd(
+        sender: CommandSender,
+        @Arg("target") target: User,
+        @Arg("type") type: ItemType,
+        @Arg("spec", true) input: JoinedString
+    ) {
+        val item = BasicItem.parseItem(type, input.args) ?: throw UsageException(
+            sender,
+            LangKey.INVALID_ITEM
+        )
 
         target.giveItem(item)
     }

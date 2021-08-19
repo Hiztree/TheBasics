@@ -1,25 +1,21 @@
 package io.github.hiztree.thebasics.core.api.user
 
 import com.google.common.collect.Maps
-import io.github.hiztree.thebasics.core.TheBasics
 import io.github.hiztree.thebasics.core.api.BasicTime
-import io.github.hiztree.thebasics.core.api.Kit
-import io.github.hiztree.thebasics.core.api.Location
-import io.github.hiztree.thebasics.core.api.World
 import io.github.hiztree.thebasics.core.api.cmd.sender.CommandSender
-import io.github.hiztree.thebasics.core.api.config.BasicConfig
-import io.github.hiztree.thebasics.core.api.config.Serializable
+import io.github.hiztree.thebasics.core.api.data.Kit
+import io.github.hiztree.thebasics.core.api.data.Location
+import io.github.hiztree.thebasics.core.api.data.World
 import io.github.hiztree.thebasics.core.api.inventory.item.BasicItem
 import io.github.hiztree.thebasics.core.api.lang.LangKey
+import io.github.hiztree.thebasics.core.api.lang.pretty
 import io.github.hiztree.thebasics.core.api.user.data.Home
-import io.github.hiztree.thebasics.core.pretty
 import java.time.Duration
 import java.time.Instant
 import java.util.*
 import kotlin.time.ExperimentalTime
 
-abstract class User(uniqueId: UUID) : OfflineUser, CommandSender, Serializable,
-    BasicConfig("${uniqueId}.conf", TheBasics.instance.getPlayerDir()) {
+abstract class User(uniqueId: UUID) : OfflineUser(uniqueId), CommandSender {
 
     private var muteEnd: Instant? = null
     private val usedKits: HashMap<String, Instant> = Maps.newHashMap()
@@ -37,16 +33,11 @@ abstract class User(uniqueId: UUID) : OfflineUser, CommandSender, Serializable,
             return false
         }
 
-        if (usedKits.containsKey(kit.name)) {
-            val kitEnd = usedKits[kit.name]
-            val difference = Duration.between(Instant.now(), kitEnd)
+        val diff = canUseKit(kit)
 
-            if (difference.isNegative) {
-                usedKits.remove(kit.name)
-            } else {
-                sendMsg(LangKey.KIT_INTERVAL, difference.pretty(), kit.name)
-                return false
-            }
+        if (diff.seconds > 0) {
+            sendMsg(LangKey.KIT_INTERVAL, diff.pretty(), kit.name)
+            return false
         }
 
         usedKits[kit.name] = Instant.now().plusSeconds(kit.interval)
@@ -57,7 +48,25 @@ abstract class User(uniqueId: UUID) : OfflineUser, CommandSender, Serializable,
             }
         }
 
+        save()
+
         return true
+    }
+
+    fun canUseKit(kit: Kit): Duration {
+        if (!usedKits.containsKey(kit.name))
+            return Duration.ZERO
+
+        val kitEnd = usedKits[kit.name]
+        val difference = Duration.between(Instant.now(), kitEnd)
+
+        if (difference.isNegative) {
+            usedKits.remove(kit.name)
+        } else {
+            return difference
+        }
+
+        return Duration.ZERO
     }
 
     fun isMuted(): Boolean {
@@ -115,7 +124,10 @@ abstract class User(uniqueId: UUID) : OfflineUser, CommandSender, Serializable,
     override fun serialize() {
         this["muteEnd"].set(muteEnd)
         this["homes"].setList(Home::class.java, homes)
-        this["usedKits"].set(usedKits)
+
+        for (usedKit in usedKits) {
+            this["usedKits", usedKit.key].set(usedKit.value)
+        }
     }
 
     override fun deserialize() {

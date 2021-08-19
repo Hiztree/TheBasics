@@ -8,6 +8,6 @@ abstract class CommandContext<T>(val type: TypeToken<T>) {
     @Throws(CommandException::class)
     abstract fun complete(sender: CommandSender, input: String): T
 
-    open fun tab(sender: CommandSender, last: String) : List<String> = emptyList()
+    open fun tab(sender: CommandSender, last: String): List<String> = emptyList()
 }
 

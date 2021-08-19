@@ -8,10 +8,10 @@ import io.github.hiztree.thebasics.core.api.config.annotation.Setting
 class GeneralConfig {
 
     companion object {
-        @Setting(comment = "This is a derp field")
-        var testValue = "Derp"
+        @Setting(comment = "Max current amount. -1 to disable a max.")
+        var maxCurrency = 100000000000.0
 
-        @Setting(comment = "This is a great field.")
-        var thing = "Thing"
+        @Setting(comment = "The starting balance for all new players.")
+        var startingBalance = 500.0
     }
 }

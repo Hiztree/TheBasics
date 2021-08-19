@@ -31,10 +31,13 @@ class CommandLoader : Loader() {
 
                 val basicCmd = loaded.getAnnotation(BasicCmd::class.java)
 
-                val defaultMethod = loaded.declaredMethods.firstOrNull { it.isAnnotationPresent(DefaultCmd::class.java) }
+                val defaultMethod =
+                    loaded.declaredMethods.firstOrNull { it.isAnnotationPresent(DefaultCmd::class.java) }
                         ?: continue
 
-                val defaultCmd = loadCmdSpec(basicCmd.label, basicCmd.desc, "", instance, defaultMethod) ?: continue
+                val defaultCmd =
+                    loadCmdSpec(basicCmd.label, basicCmd.desc, "", instance, defaultMethod)
+                        ?: continue
 
                 for (declaredMethod in loaded.declaredMethods) {
                     if (declaredMethod.isAnnotationPresent(SubCmd::class.java)) {
@@ -60,7 +63,13 @@ class CommandLoader : Loader() {
         return true
     }
 
-    private fun loadCmdSpec(label: String, desc: String, parentLabel: String, instance: Any, method: Method): CommandSpec? {
+    private fun loadCmdSpec(
+        label: String,
+        desc: String,
+        parentLabel: String,
+        instance: Any,
+        method: Method
+    ): CommandSpec? {
         val sender: Parameter = method.parameters.firstOrNull {
             CommandSender::class.java.isAssignableFrom(it.type)
         } ?: return null

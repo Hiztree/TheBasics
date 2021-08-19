@@ -7,37 +7,37 @@ class BasicTime {
 
     var days = 0L
         set(value) {
-            if(value < 0)
+            if (value < 0)
                 throw IllegalArgumentException("Days must be greater then 0.")
             field = value
         }
 
     var hours = 0L
         set(value) {
-            if(value < 0)
+            if (value < 0)
                 throw IllegalArgumentException("Hours must be greater then 0.")
             field = value
         }
 
     var minutes = 0L
         set(value) {
-            if(value < 0)
+            if (value < 0)
                 throw IllegalArgumentException("Minutes must be greater then 0.")
             field = value
         }
 
     var seconds = 0L
         set(value) {
-            if(value < 0)
+            if (value < 0)
                 throw IllegalArgumentException("Seconds must be greater then 0.")
             field = value
         }
 
     fun toInstant(): Instant = Instant.now()
-            .plus(days, ChronoUnit.DAYS)
-            .plus(hours, ChronoUnit.HOURS)
-            .plus(minutes, ChronoUnit.MINUTES)
-            .plus(seconds, ChronoUnit.SECONDS)
+        .plus(days, ChronoUnit.DAYS)
+        .plus(hours, ChronoUnit.HOURS)
+        .plus(minutes, ChronoUnit.MINUTES)
+        .plus(seconds, ChronoUnit.SECONDS)
 
 
     fun isZero() = days <= 0 && hours <= 0 && minutes <= 0 && seconds <= 0

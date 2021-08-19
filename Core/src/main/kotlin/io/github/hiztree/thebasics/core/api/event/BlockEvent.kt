@@ -7,11 +7,14 @@
 
 package io.github.hiztree.thebasics.core.api.event
 
-import io.github.hiztree.thebasics.core.api.Location
+import io.github.hiztree.thebasics.core.api.data.Location
 import io.github.hiztree.thebasics.core.api.inventory.item.BasicItem
 import io.github.hiztree.thebasics.core.api.user.User
 
 abstract class BlockEvent(val user: User, val block: BasicItem, val loc: Location) : Cancellable()
 
-open class BlockBreakEvent(user: User, block: BasicItem, loc: Location) : BlockEvent(user, block, loc)
-open class BlockPlaceEvent(user: User, block: BasicItem, loc: Location) : BlockEvent(user, block, loc)
+open class BlockBreakEvent(user: User, block: BasicItem, loc: Location) :
+    BlockEvent(user, block, loc)
+
+open class BlockPlaceEvent(user: User, block: BasicItem, loc: Location) :
+    BlockEvent(user, block, loc)

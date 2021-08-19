@@ -35,7 +35,8 @@ class CommandSpec(
             if (parameter.isAnnotationPresent(Arg::class.java)) {
                 val arg = parameter.getAnnotation(Arg::class.java)!!
 
-                sb.append(if (arg.optional) "[" else "<").append(arg.label).append(if (arg.optional) "]" else ">")
+                sb.append(if (arg.optional) "[" else "<").append(arg.label)
+                    .append(if (arg.optional) "]" else ">")
             } else {
                 sb.append("<").append(parameter.name).append(">")
             }
@@ -43,7 +44,8 @@ class CommandSpec(
 
         usage = sb.toString()
 
-        reqParams = parameters.count { if(it.isAnnotationPresent(Arg::class.java)) !it.getAnnotation(Arg::class.java)!!.optional else true }
+        reqParams =
+            parameters.count { if (it.isAnnotationPresent(Arg::class.java)) !it.getAnnotation(Arg::class.java)!!.optional else true }
     }
 
     fun performCmd(sender: CommandSender, rawArgs: Array<out String>) {
@@ -79,7 +81,7 @@ class CommandSpec(
                     }
 
                     try {
-                        if(arg.type == TypeToken.of(JoinedString::class.java)) {
+                        if (arg.type == TypeToken.of(JoinedString::class.java)) {
                             args.add(JoinedString(rawArgs.copyOfRange(x, rawArgs.size)))
                         } else {
                             try {
@@ -89,7 +91,7 @@ class CommandSpec(
                             }
                         }
                     } catch (e: Exception) {
-                        when(e) {
+                        when (e) {
                             is CommandException, is ArrayIndexOutOfBoundsException -> {
                                 if (argAnnotation != null && !argAnnotation.optional) {
                                     sender.sendMsg(LangKey.INVALID_USAGE, e.message!!)
@@ -133,7 +135,7 @@ class CommandSpec(
         val matchedCompletions = Lists.newArrayList<String>()
 
         for (subCommand in subCommands) {
-            if(subCommand.label.startsWith(lastWord, true))
+            if (subCommand.label.startsWith(lastWord, true) && args.size == 1)
                 matchedCompletions.add(subCommand.label)
         }
 

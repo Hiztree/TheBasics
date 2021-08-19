@@ -12,9 +12,6 @@ import io.github.hiztree.thebasics.core.api.cmd.CommandSpec
 import io.github.hiztree.thebasics.core.api.config.BasicConfig
 import io.github.hiztree.thebasics.core.api.config.BasicSerializers
 import io.github.hiztree.thebasics.core.api.lang.LangKey
-import java.time.Duration
-import kotlin.time.ExperimentalTime
-import kotlin.time.toKotlinDuration
 
 abstract class TheBasics : PluginContainer {
 
@@ -60,11 +57,11 @@ abstract class TheBasics : PluginContainer {
         dataConfig = BasicConfig("data.conf")
 
         val registeredClasses = ClassPath.from(TheBasics::class.java.classLoader)
-                .getTopLevelClassesRecursive("io.github.hiztree.thebasics.core")
+            .getTopLevelClassesRecursive("io.github.hiztree.thebasics.core")
 
         //Apply the loaders to all of the modules.
         for (loadClasses in ClassPath.from(TheBasics::class.java.classLoader)
-                .getTopLevelClasses("io.github.hiztree.thebasics.core.loader")) {
+            .getTopLevelClasses("io.github.hiztree.thebasics.core.loader")) {
             val loadedClass = loadClasses.load().newInstance()
 
             if (loadedClass is Loader) {
@@ -74,9 +71,4 @@ abstract class TheBasics : PluginContainer {
 
         LangKey.load()
     }
-}
-
-@OptIn(ExperimentalTime::class)
-fun Duration.pretty(): String {
-    return this.toKotlinDuration().toIsoString().replace("PT", "")
 }

@@ -1,7 +1,7 @@
 package io.github.hiztree.thebasics.spigot.impl
 
-import io.github.hiztree.thebasics.core.api.Location
-import io.github.hiztree.thebasics.core.api.World
+import io.github.hiztree.thebasics.core.api.data.Location
+import io.github.hiztree.thebasics.core.api.data.World
 import io.github.hiztree.thebasics.core.api.inventory.item.BasicItem
 import io.github.hiztree.thebasics.core.api.user.Gamemode
 import io.github.hiztree.thebasics.core.api.user.User
@@ -13,7 +13,6 @@ import org.bukkit.entity.Player
 import java.util.*
 
 class SpigotUser(private val base: Player) : User(base.uniqueId) {
-
 
     override fun getName(): String {
         return base.name

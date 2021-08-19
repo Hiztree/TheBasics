@@ -1,4 +1,4 @@
-package io.github.hiztree.thebasics.core.api
+package io.github.hiztree.thebasics.core.api.data
 
 import java.util.*
 

@@ -21,7 +21,10 @@ class BlockListener : Listener {
     @EventHandler
     fun onBreak(event: BlockBreakEvent) {
         val apiEvent = io.github.hiztree.thebasics.core.api.event.BlockBreakEvent(
-                event.player.toBasics(), BasicItem(ItemTypes.getByName(event.block.type.name) ?: ItemTypes.AIR), event.block.location.toBasics())
+            event.player.toBasics(),
+            BasicItem(ItemTypes.getByName(event.block.type.name) ?: ItemTypes.AIR),
+            event.block.location.toBasics()
+        )
 
         TheBasics.eventBus.post(apiEvent)
         event.isCancelled = apiEvent.cancel
@@ -30,7 +33,10 @@ class BlockListener : Listener {
     @EventHandler
     fun onPlace(event: BlockPlaceEvent) {
         val apiEvent = io.github.hiztree.thebasics.core.api.event.BlockPlaceEvent(
-                event.player.toBasics(), BasicItem(ItemTypes.getByName(event.block.type.name) ?: ItemTypes.AIR), event.block.location.toBasics())
+            event.player.toBasics(),
+            BasicItem(ItemTypes.getByName(event.block.type.name) ?: ItemTypes.AIR),
+            event.block.location.toBasics()
+        )
 
         TheBasics.eventBus.post(apiEvent)
         event.isCancelled = apiEvent.cancel

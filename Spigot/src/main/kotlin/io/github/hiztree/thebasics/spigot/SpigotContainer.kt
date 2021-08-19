@@ -3,17 +3,15 @@ package io.github.hiztree.thebasics.spigot
 import com.google.common.collect.Lists
 import io.github.hiztree.thebasics.core.TheBasics
 import io.github.hiztree.thebasics.core.api.Implementation
-import io.github.hiztree.thebasics.core.api.Kit
-import io.github.hiztree.thebasics.core.api.World
 import io.github.hiztree.thebasics.core.api.cmd.CommandSpec
 import io.github.hiztree.thebasics.core.api.cmd.UsageException
 import io.github.hiztree.thebasics.core.api.cmd.sender.ConsoleSender
+import io.github.hiztree.thebasics.core.api.data.World
 import io.github.hiztree.thebasics.core.api.inventory.item.BasicItem
 import io.github.hiztree.thebasics.core.api.inventory.item.ItemType
 import io.github.hiztree.thebasics.core.api.inventory.item.ItemTypes
 import io.github.hiztree.thebasics.core.api.inventory.item.extra.EnchantType
 import io.github.hiztree.thebasics.core.api.user.User
-import io.github.hiztree.thebasics.core.configs.KitConfig
 import io.github.hiztree.thebasics.spigot.impl.PlayerListener
 import io.github.hiztree.thebasics.spigot.impl.SpigotConsoleSender
 import io.github.hiztree.thebasics.spigot.impl.SpigotUser
@@ -89,12 +87,6 @@ class SpigotContainer : JavaPlugin(), Listener {
                 2
             )
         )
-
-        KitConfig.kits.add(Kit("test", 86400, arrayListOf(BasicItem(ItemTypes.DIAMOND), item)))
-
-        TheBasics.instance.kitConfig.getRootNode().node("kits")
-            .setList(Kit::class.java, KitConfig.kits)
-        TheBasics.instance.kitConfig.save()
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -133,7 +125,11 @@ class SpigotContainer : JavaPlugin(), Listener {
                     return true
                 }
 
-                override fun tabComplete(sender: CommandSender, alias: String, args: Array<out String>): MutableList<String> {
+                override fun tabComplete(
+                    sender: CommandSender,
+                    alias: String,
+                    args: Array<out String>
+                ): MutableList<String> {
                     return if (sender is Player) {
                         spec.tabComplete(sender.toBasics(), args)
                     } else {
@@ -149,8 +145,8 @@ class SpigotContainer : JavaPlugin(), Listener {
     }
 }
 
-fun CommandSender.toBasics() : io.github.hiztree.thebasics.core.api.cmd.sender.CommandSender {
-    return if(this is User) {
+fun CommandSender.toBasics(): io.github.hiztree.thebasics.core.api.cmd.sender.CommandSender {
+    return if (this is User) {
         TheBasics.instance.getUser(this.name)!!
     } else {
         TheBasics.instance.getConsoleSender()
@@ -161,8 +157,14 @@ fun Player.toBasics(): User {
     return TheBasics.instance.getUser(this.name)!!
 }
 
-fun Location.toBasics(): io.github.hiztree.thebasics.core.api.Location {
-    return io.github.hiztree.thebasics.core.api.Location(this.x, this.y, this.z)
+fun Location.toBasics(): io.github.hiztree.thebasics.core.api.data.Location {
+    return io.github.hiztree.thebasics.core.api.data.Location(
+        this.x,
+        this.y,
+        this.z,
+        this.yaw.toDouble(),
+        this.pitch.toDouble()
+    )
 }
 
 fun World.toBukkit(): org.bukkit.World {
@@ -173,8 +175,8 @@ fun org.bukkit.World.toBasics(): World {
     return SpigotWorld(this)
 }
 
-fun io.github.hiztree.thebasics.core.api.Location.toBukkit(world: org.bukkit.World): Location {
-    return Location(world, this.x, this.y, this.z)
+fun io.github.hiztree.thebasics.core.api.data.Location.toBukkit(world: org.bukkit.World): Location {
+    return Location(world, this.x, this.y, this.z, this.yaw.toFloat(), this.pitch.toFloat())
 }
 
 fun ItemStack.toBasics(): BasicItem {
@@ -188,8 +190,13 @@ fun ItemStack.toBasics(): BasicItem {
     for (enchantment in this.enchantments) {
         val type = EnchantType.getByName(enchantment.key.name)
 
-        if(type != null)
-            item.enchantments.add(io.github.hiztree.thebasics.core.api.inventory.item.extra.Enchantment(type, enchantment.value))
+        if (type != null)
+            item.enchantments.add(
+                io.github.hiztree.thebasics.core.api.inventory.item.extra.Enchantment(
+                    type,
+                    enchantment.value
+                )
+            )
     }
 
     return item
@@ -199,7 +206,7 @@ fun Material.toBasics(): ItemType {
     return ItemTypes.getByName(this.name) ?: ItemTypes.AIR
 }
 
-fun BasicItem.toBukkit() : ItemStack {
+fun BasicItem.toBukkit(): ItemStack {
     lateinit var item: ItemStack
 
     if (this.nbt.isNotEmpty()) {
@@ -213,8 +220,8 @@ fun BasicItem.toBukkit() : ItemStack {
     } else {
 
         val material = Material.matchMaterial(this.itemType.name)
-                ?: Material.matchMaterial(this.itemType.altID)
-                ?: Material.matchMaterial(this.itemType.actualModID) ?: Material.AIR
+            ?: Material.matchMaterial(this.itemType.altID)
+            ?: Material.matchMaterial(this.itemType.actualModID) ?: Material.AIR
 
         item = ItemStack(material, this.qty)
     }
@@ -222,10 +229,10 @@ fun BasicItem.toBukkit() : ItemStack {
     val meta = item.itemMeta
 
     if (meta != null) {
-        if(this.name.isNotEmpty())
+        if (this.name.isNotEmpty())
             meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', this.name))
 
-        if(this.lore.isNotEmpty()) {
+        if (this.lore.isNotEmpty()) {
             val textLore = Lists.newArrayList<String>()
 
             for (s in this.lore) {
@@ -247,9 +254,9 @@ fun BasicItem.toBukkit() : ItemStack {
     return item
 }
 
-fun io.github.hiztree.thebasics.core.api.inventory.item.extra.Enchantment.toBukkit() : Enchantment? {
+fun io.github.hiztree.thebasics.core.api.inventory.item.extra.Enchantment.toBukkit(): Enchantment? {
     for (value in Enchantment.values()) {
-        if(value.key.key.equals(this.type.id, true))
+        if (value.key.key.equals(this.type.id, true))
             return value
     }
 

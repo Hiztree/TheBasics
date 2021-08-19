@@ -2,7 +2,6 @@ package io.github.hiztree.thebasics.core.commands
 
 import io.github.hiztree.thebasics.core.TheBasics
 import io.github.hiztree.thebasics.core.api.cmd.JoinedString
-import io.github.hiztree.thebasics.core.api.cmd.UsageException
 import io.github.hiztree.thebasics.core.api.cmd.annotation.Arg
 import io.github.hiztree.thebasics.core.api.cmd.annotation.BasicCmd
 import io.github.hiztree.thebasics.core.api.cmd.annotation.DefaultCmd
@@ -14,11 +13,15 @@ import io.github.hiztree.thebasics.core.api.user.User
 class KickCmd {
 
     @DefaultCmd
-    fun kickCmd(sender: CommandSender, @Arg("target") user: User, @Arg("reason") reason: JoinedString) {
+    fun kickCmd(
+        sender: CommandSender,
+        @Arg("target") user: User,
+        @Arg("reason") reason: JoinedString
+    ) {
         user.kick(reason.toString())
 
         TheBasics.instance.users
-                .filter { it.hasPermission("thebasics.kick.notify") }
-                .forEach { it.sendMsg(LangKey.KICK_NOTIFY, user.getName()) }
+            .filter { it.hasPermission("thebasics.kick.notify") }
+            .forEach { it.sendMsg(LangKey.KICK_NOTIFY, user.getName()) }
     }
 }

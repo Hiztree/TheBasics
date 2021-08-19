@@ -30,7 +30,7 @@ class HomeCmd {
                     return
                 }
                 else -> {
-                    sender.sendMsg(LangKey.HOME_LIST, sender.homes.joinToString(", ") { it.name })
+                    sender.sendMsg(LangKey.HOME_LIST, sender.homes.joinToString { it.name })
                     return
                 }
             }

@@ -13,7 +13,13 @@ import io.github.hiztree.thebasics.core.api.inventory.item.extra.DyeColor
 import io.github.hiztree.thebasics.core.api.inventory.item.extra.EnchantType
 import io.github.hiztree.thebasics.core.api.inventory.item.extra.Enchantment
 
-class BasicItem(val itemType: ItemType, var qty: Int = 1, var name: String = "", var lore: List<String> = Lists.newArrayList(), val nbt: HashMap<String, String> = Maps.newHashMap()) {
+class BasicItem(
+    val itemType: ItemType,
+    var qty: Int = 1,
+    var name: String = "",
+    var lore: List<String> = Lists.newArrayList(),
+    val nbt: HashMap<String, String> = Maps.newHashMap()
+) {
 
     var dyeColor: DyeColor? = null
     var enchantments: ArrayList<Enchantment> = Lists.newArrayList()
@@ -66,8 +72,8 @@ class BasicItem(val itemType: ItemType, var qty: Int = 1, var name: String = "",
         }
 
         //Format: <itemType> [qty] [enchant] [lore] [name]
-        fun parseItem(type: ItemType, args: Array<out String>) : BasicItem? {
-            if(args.isEmpty())
+        fun parseItem(type: ItemType, args: Array<out String>): BasicItem? {
+            if (args.isEmpty())
                 return BasicItem(type, 1)
 
             var qty = 1
@@ -75,17 +81,17 @@ class BasicItem(val itemType: ItemType, var qty: Int = 1, var name: String = "",
             var lore = ""
             val enchantments = Lists.newArrayList<Enchantment>()
 
-            for(arg in args) {
-                if(arg.toIntOrNull() != null) {
+            for (arg in args) {
+                if (arg.toIntOrNull() != null) {
                     qty = arg.toInt()
-                } else if(arg.startsWith("lore:")) {
+                } else if (arg.startsWith("lore:")) {
                     lore = arg.removePrefix("lore:").replace("_", " ").replace("|", "\n")
-                } else if(arg.contains("name:")) {
+                } else if (arg.contains("name:")) {
                     displayName = arg.removePrefix("name:")
                 } else {
                     val split = arg.split(":")
 
-                    if(split.size > 1) {
+                    if (split.size > 1) {
                         val enchantment = EnchantType.getByName(split[0]) ?: continue
                         val lvl = split[1].toIntOrNull() ?: continue
 

@@ -22,7 +22,12 @@ import java.net.URLConnection
 /**
  * Creates a new config base off the name and directory.
  */
-open class BasicConfig(name: String, dir: File = TheBasics.instance.getConfigDir(), classLoader: ClassLoader = TheBasics::class.java.classLoader, hasAsset: Boolean = false) {
+open class BasicConfig(
+    name: String,
+    dir: File = TheBasics.instance.getConfigDir(),
+    classLoader: ClassLoader = TheBasics::class.java.classLoader,
+    hasAsset: Boolean = false
+) {
 
     private val file: File = File(dir, name)
     private var loader: HoconConfigurationLoader
@@ -41,14 +46,14 @@ open class BasicConfig(name: String, dir: File = TheBasics.instance.getConfigDir
         }
 
         loader = HoconConfigurationLoader.builder()
-                .file(file)
-                .defaultOptions { opts: ConfigurationOptions ->
-                    opts.shouldCopyDefaults(true)
-                            .serializers { build: TypeSerializerCollection.Builder ->
-                                build.registerAll(BasicSerializers.serializers)
-                            }
-                }.prettyPrinting(true)
-                .build()
+            .file(file)
+            .defaultOptions { opts: ConfigurationOptions ->
+                opts.shouldCopyDefaults(true)
+                    .serializers { build: TypeSerializerCollection.Builder ->
+                        build.registerAll(BasicSerializers.serializers)
+                    }
+            }.prettyPrinting(true)
+            .build()
 
         rootNode = loader.load()
     }

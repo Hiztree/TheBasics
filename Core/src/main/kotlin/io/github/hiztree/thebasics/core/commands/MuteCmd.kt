@@ -15,14 +15,19 @@ import io.github.hiztree.thebasics.core.api.user.User
 class MuteCmd {
 
     @DefaultCmd
-    fun muteCmd(sender: CommandSender, @Arg("target") user: User, @Arg("duration") duration: BasicTime, @Arg("reason") reason: JoinedString) {
-        if(user.isMuted())
+    fun muteCmd(
+        sender: CommandSender,
+        @Arg("target") user: User,
+        @Arg("duration") duration: BasicTime,
+        @Arg("reason") reason: JoinedString
+    ) {
+        if (user.isMuted())
             throw UsageException(sender, LangKey.MUTE_ERROR)
 
         user.mute(duration, reason.toString())
 
         TheBasics.instance.users
-                .filter { it.hasPermission("thebasics.mute.notify") }
-                .forEach { it.sendMsg(LangKey.MUTE_NOTIFY, user.getName(), duration.toString()) }
+            .filter { it.hasPermission("thebasics.mute.notify") }
+            .forEach { it.sendMsg(LangKey.MUTE_NOTIFY, user.getName(), duration.toString()) }
     }
 }

@@ -1,11 +1,16 @@
 package io.github.hiztree.thebasics.core.api.lang
 
 import io.github.hiztree.thebasics.core.TheBasics
+import java.text.DecimalFormat
+import java.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.toKotlinDuration
 
 enum class LangKey(private val default: String) {
 
     NO_PERMISSION("&cYou do not have permission to perform this command!"),
     INVALID_USAGE("&cYou must specify a valid: &7{0}&c!"),
+    DECIMAL_FORMAT("#.##"),
     HEALED_TARGET("&7You have healed &6{0}&7."),
     HEALED_SENDER("&7You have been healed by &6{0}&7."),
     HEAL_SELF("&7You have healed yourself."),
@@ -36,12 +41,31 @@ enum class LangKey(private val default: String) {
     KIT_GIVE_TARGET("&7You have received the kit &6{0}&7."),
     KIT_INTERVAL("&cYou must wait &7{0} &cuntil you can use the &7{1} &ckit again!"),
     KIT_PERMISSION("&cYou do not have access to this kit!"),
+    KIT_LIST("&7Kits: &6{0}&7."),
     TELEPORT_HERE_TARGET("&7You have been teleported to &6{0}'s &7location."),
     TELEPORT_SENDER("&7You have teleported to &6{0}'s &7location."),
     NO_SPAWN("&cThe server does not have a set spawn!"),
-    SET_SPAWN("&7You have set the servers spawn at your current location.");
+    SET_SPAWN("&7You have set the servers spawn at your current location."),
+    REPLACE_WARP("&7You have updated the warp &6{0} &7to your current location."),
+    SET_WARP("&7You have set a warp called &6{0} &7at your current location."),
+    WARP_PERMISSION("&cYou do not have permission to use this warp!"),
+    WARP_USE("&7You have teleported to the warp &6{0}&7."),
+    WARP_LIST("&7Warps: &6{0}&7."),
+    CURRENCY_SYMBOL("$"),
+    BALANCE_CHECK_SELF("&7Balance: &6{CURRENCY_SYMBOL}{0}&7."),
+    BALANCE_CHECK_OTHER("&6{0}'s &7Balance: &6{CURRENCY_SYMBOL}{1}&7."),
+    BALANCE_SET_SENDER("&7You set the user &6{0} &7balance to &6{CURRENCY_SYMBOL}{1}&7."),
+    BALANCE_SET_TARGET("&7Your balance was set to &6{CURRENCY_SYMBOL}{0}&7."),
+    BALANCE_DEPOSIT_SENDER("&7You deposited &6{CURRENCY_SYMBOL}{0} &7into &6{1}'s &7account."),
+    BALANCE_DEPOSIT_TARGET("&7You have received &6{CURRENCY_SYMBOL}{0}&7."),
+    BALANCE_WITHDRAW_SENDER("&7You withdrawn &6{CURRENCY_SYMBOL}{0} &7from &6{1}'s &7account."),
+    BALANCE_WITHDRAW_TARGET("&7You have spent &6{CURRENCY_SYMBOL}{0}&7."),
+    BALANCE_MAX("&cYou have already reached the maximum balance!"),
+    INVALID_AMOUNT("&cYou must specify a positive amount!"),
+    INSUFFICIENT_FUNDS_SENDER("&cThe player &7{0} &cdoes not have enough funds!");
 
     companion object {
+        val decimalFormat = DecimalFormat(DECIMAL_FORMAT.msg)
 
         fun load() {
             var update = false
@@ -58,17 +82,38 @@ enum class LangKey(private val default: String) {
                 value.msg = node.getString(value.default)
             }
 
-            if(update)
+            if (update)
                 TheBasics.instance.langConfig.save()
         }
-
     }
 
     var msg: String = default
+
+    fun parse(vararg args: Any): String {
+        var parsedMsg = msg
+
+        for (index in args.indices) {
+            parsedMsg = parsedMsg.replace("{$index}", args[index].toString())
+        }
+
+        for (value in values()) {
+            if (parsedMsg.contains("{${value.name}}")) {
+                parsedMsg = parsedMsg.replace("{${value.name}}", value.msg)
+            }
+        }
+
+        return parsedMsg
+    }
 
     override fun toString(): String {
         return msg
     }
 }
 
-fun String.toCamelCase() = toLowerCase().split('_').joinToString("", transform = String::capitalize).decapitalize()
+@OptIn(ExperimentalTime::class)
+fun Duration.pretty(): String =
+    this.toKotlinDuration().toIsoString().replace("PT", "").split(".")[0] + "S"
+
+fun Number.pretty(): String = LangKey.decimalFormat.format(this)
+fun String.toCamelCase() =
+    toLowerCase().split('_').joinToString("", transform = String::capitalize).decapitalize()

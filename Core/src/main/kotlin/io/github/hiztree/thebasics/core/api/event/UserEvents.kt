@@ -21,7 +21,7 @@ open class UserJoinEvent(user: User) : UserEvent(user)
 
 open class UserQuitEvent(user: User) : UserEvent(user)
 
-open class UserChatEvent(user: User, var msg: String?): UserEvent(user)
+open class UserChatEvent(user: User, var msg: String?) : UserEvent(user)
 
 open class UserSleepEvent(user: User) : UserEvent(user)
 

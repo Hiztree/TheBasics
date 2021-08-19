@@ -7,17 +7,10 @@ interface CommandSender {
 
     fun getName(): String
     fun getUniqueID(): UUID
+
     fun sendMsg(msg: String)
 
-    fun sendMsg(key: LangKey, vararg args: Any) {
-        var msg = key.msg
-
-        for (index in args.indices) {
-            msg = msg.replace("{$index}", args[index].toString())
-        }
-
-        sendMsg(msg)
-    }
+    fun sendMsg(key: LangKey, vararg args: Any) = sendMsg(key.parse(*args))
 
     fun hasPermission(permission: String): Boolean
 }

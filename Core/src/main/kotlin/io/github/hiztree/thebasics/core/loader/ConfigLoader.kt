@@ -31,7 +31,8 @@ class ConfigLoader : Loader() {
                 for (declaredField in loaded.declaredFields) {
                     if (declaredField.isAnnotationPresent(Setting::class.java)) {
                         val setting = declaredField.getAnnotation(Setting::class.java)
-                        val path = if (setting.path.isEmpty()) declaredField.name.toLowerCase() else setting.path
+                        val path =
+                            if (setting.path.isEmpty()) declaredField.name.toLowerCase() else setting.path
                         val node = parentNode.node(path)
 
                         declaredField.isAccessible = true
@@ -52,7 +53,7 @@ class ConfigLoader : Loader() {
 
                 if (change)
                     section.type.getConfig().save()
-            } catch (ignore: ReflectiveOperationException) {
+            } catch (ignore: Exception) {
                 ignore.printStackTrace()
                 continue
             }

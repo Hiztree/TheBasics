@@ -13,8 +13,8 @@ class FeedCmd {
 
     @DefaultCmd
     fun feedCmd(sender: CommandSender, @Arg("target", true) user: User?) {
-        if(user != null) {
-            if(!sender.hasPermission("thebasics.feed.others"))
+        if (user != null) {
+            if (!sender.hasPermission("thebasics.feed.others"))
                 throw UsageException(sender, LangKey.NO_PERMISSION)
 
             user.setHunger(20.0)
@@ -22,7 +22,7 @@ class FeedCmd {
 
             sender.sendMsg(LangKey.FED_SENDER, user.getName())
         } else {
-            if(sender !is User)
+            if (sender !is User)
                 throw UsageException(sender, LangKey.USER_ERROR)
 
             sender.setHunger(20.0)

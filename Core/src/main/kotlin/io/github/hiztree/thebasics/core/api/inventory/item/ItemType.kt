@@ -7,7 +7,11 @@
 
 package io.github.hiztree.thebasics.core.api.inventory.item
 
-class ItemType(val name: String, val altID: String = "", var actualModID: String = "minecraft:$name") {
+class ItemType(
+    val name: String,
+    val altID: String = "",
+    var actualModID: String = "minecraft:$name"
+) {
     init {
         if (!ItemTypes.VALUES.contains(this))
             ItemTypes.VALUES.add(this)

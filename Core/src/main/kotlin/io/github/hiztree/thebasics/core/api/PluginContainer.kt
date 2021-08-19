@@ -1,6 +1,7 @@
 package io.github.hiztree.thebasics.core.api
 
 import io.github.hiztree.thebasics.core.api.cmd.sender.ConsoleSender
+import io.github.hiztree.thebasics.core.api.data.World
 import io.github.hiztree.thebasics.core.api.user.User
 import java.io.File
 import java.util.*
@@ -24,7 +25,7 @@ interface PluginContainer {
     fun getImplementation(): Implementation
 
     fun getConfigDir(): File {
-        return if(getImplementation() == Implementation.BUKKIT)
+        return if (getImplementation() == Implementation.BUKKIT)
             File("plugins/TheBasics")
         else
             File("config/thebasics")

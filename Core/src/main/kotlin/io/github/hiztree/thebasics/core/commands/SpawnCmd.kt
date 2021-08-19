@@ -1,11 +1,11 @@
 package io.github.hiztree.thebasics.core.commands
 
 import io.github.hiztree.thebasics.core.TheBasics
-import io.github.hiztree.thebasics.core.api.Location
-import io.github.hiztree.thebasics.core.api.World
 import io.github.hiztree.thebasics.core.api.cmd.UsageException
 import io.github.hiztree.thebasics.core.api.cmd.annotation.BasicCmd
 import io.github.hiztree.thebasics.core.api.cmd.annotation.DefaultCmd
+import io.github.hiztree.thebasics.core.api.data.Location
+import io.github.hiztree.thebasics.core.api.data.World
 import io.github.hiztree.thebasics.core.api.lang.LangKey
 import io.github.hiztree.thebasics.core.api.user.User
 import java.util.*

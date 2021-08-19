@@ -13,8 +13,8 @@ class HealCmd {
 
     @DefaultCmd
     fun healCommand(sender: CommandSender, @Arg("target", true) user: User?) {
-        if(user != null) {
-            if(!sender.hasPermission("thebasics.heal.others"))
+        if (user != null) {
+            if (!sender.hasPermission("thebasics.heal.others"))
                 throw UsageException(sender, LangKey.NO_PERMISSION)
 
             user.setHealth(20.0)
@@ -22,7 +22,7 @@ class HealCmd {
 
             sender.sendMsg(LangKey.HEALED_SENDER, user.getName())
         } else {
-            if(sender !is User)
+            if (sender !is User)
                 throw UsageException(sender, LangKey.USER_ERROR)
 
             sender.setHealth(20.0)
