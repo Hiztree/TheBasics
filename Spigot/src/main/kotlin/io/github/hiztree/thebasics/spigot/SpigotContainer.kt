@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Levi Pawlak
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package io.github.hiztree.thebasics.spigot
 
 import com.google.common.collect.Lists
@@ -12,10 +36,7 @@ import io.github.hiztree.thebasics.core.api.inventory.item.ItemType
 import io.github.hiztree.thebasics.core.api.inventory.item.ItemTypes
 import io.github.hiztree.thebasics.core.api.inventory.item.extra.EnchantType
 import io.github.hiztree.thebasics.core.api.user.User
-import io.github.hiztree.thebasics.spigot.impl.PlayerListener
-import io.github.hiztree.thebasics.spigot.impl.SpigotConsoleSender
-import io.github.hiztree.thebasics.spigot.impl.SpigotUser
-import io.github.hiztree.thebasics.spigot.impl.SpigotWorld
+import io.github.hiztree.thebasics.spigot.impl.*
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Location
@@ -68,6 +89,7 @@ class SpigotContainer : JavaPlugin(), Listener {
         core.init()
 
         Bukkit.getPluginManager().registerEvents(PlayerListener(), this)
+        Bukkit.getPluginManager().registerEvents(BlockListener(), this)
         Bukkit.getPluginManager().registerEvents(this, this)
 
         val mapField: Field = Bukkit.getServer().javaClass.getDeclaredField("commandMap")
@@ -78,15 +100,6 @@ class SpigotContainer : JavaPlugin(), Listener {
         for (command in core.commands) {
             registerCommand(command)
         }
-
-        val item =
-            BasicItem(ItemTypes.DIAMOND, 2, "&6Derp Squad", arrayListOf("Derp", "This", "Stuff"))
-        item.enchantments.add(
-            io.github.hiztree.thebasics.core.api.inventory.item.extra.Enchantment(
-                EnchantType.AQUA_AFFINITY,
-                2
-            )
-        )
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -113,8 +126,6 @@ class SpigotContainer : JavaPlugin(), Listener {
                         else if (sender is ConsoleCommandSender)
                             spec.performCmd(core.getConsoleSender(), args)
                     } catch (e: Exception) {
-                        e.printStackTrace()
-
                         when (e) {
                             !is UsageException, !is InvocationTargetException -> {
                                 sender.sendMessage("${ChatColor.RED}There was an error performing the command.")
@@ -140,7 +151,7 @@ class SpigotContainer : JavaPlugin(), Listener {
 
             commandMap.register(spec.label, "basic", command)
         } catch (e: Exception) {
-            //TODO Error handling
+            logger.severe("Could not register command: ${spec.label}! Please contact plugin author.")
         }
     }
 }

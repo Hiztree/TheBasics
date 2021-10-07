@@ -1,0 +1,11 @@
+[
+  {
+    "modid": "thebasics",
+    "name": "TheBasics",
+    "version": "0.0.1",
+    "description": "A set of basic functions for Sponge servers.",
+    "authorList": [
+      "Hiztree"
+    ]
+  }
+]

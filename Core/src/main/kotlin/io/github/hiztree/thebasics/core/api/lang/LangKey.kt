@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Levi Pawlak
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package io.github.hiztree.thebasics.core.api.lang
 
 import io.github.hiztree.thebasics.core.TheBasics
@@ -23,7 +47,7 @@ enum class LangKey(private val default: String) {
     MUTE_NOTIFY("&cThe user &7{0} &chas been muted for &7{1}&c."),
     MUTE_ERROR("&cThat user is already muted!."),
     MUTED("&cYou have been muted for &7{0} &cfor &7{1}&c."),
-    MUTE_ATTEMPT("&cYou are still muted and cannot talk."),
+    MUTE_ATTEMPT("&cYou are still muted and cannot talk or use commands."),
     XP("&7The player &6{0} &7xp is &6{1} &7and level is &6{2}&7."),
     XP_GIVE_SENDER("&7You gave &6{0} &7levels to &6{1}&7."),
     XP_GIVE_TARGET("&7You received &6{0} &7levels."),
