@@ -36,6 +36,7 @@ import io.github.hiztree.thebasics.core.api.inventory.item.BasicItem
 import io.github.hiztree.thebasics.core.api.inventory.item.ItemType
 import io.github.hiztree.thebasics.core.api.inventory.item.ItemTypes
 import io.github.hiztree.thebasics.core.api.inventory.item.extra.EnchantType
+import io.github.hiztree.thebasics.core.api.log.BasicLogger
 import io.github.hiztree.thebasics.core.api.user.User
 import io.github.hiztree.thebasics.spigot.impl.*
 import org.slf4j.Logger
@@ -72,9 +73,10 @@ import java.util.*
 class SpongeContainer {
 
     @Inject
-    private lateinit var logger: Logger
+    private lateinit var log: Logger
 
     private val core = object : TheBasics() {
+        val logger = SpongeLogger(log)
         val onlineUsers = Lists.newArrayList<User>()
         private val consoleSender = SpongeConsoleSender(Sponge.getServer().console)
 
@@ -93,6 +95,10 @@ class SpongeContainer {
             val spongeWorld = Sponge.getServer().getWorld(uniqueID).orElse(null) ?: return null
 
             return SpongeWorld(spongeWorld)
+        }
+
+        override fun getLog(): BasicLogger {
+            return logger
         }
     }
 
@@ -174,7 +180,7 @@ class SpongeContainer {
             Sponge.getCommandManager()
                 .register(this, command, arrayListOf(spec.label, *spec.aliases.toTypedArray()))
         } catch (e: Exception) {
-            logger.error("Could not register command: ${spec.label}! Please contact plugin author.")
+            log.error("Could not register command: ${spec.label}! Please contact plugin author.")
         }
     }
 }

@@ -72,7 +72,8 @@ class CommandLoader : Loader() {
 
                 TheBasics.instance.commands.add(defaultCmd)
             } catch (ex: ReflectiveOperationException) {
-                ex.printStackTrace()
+                TheBasics.instance.getLog()
+                    .error("Could not load command class: ${info.simpleName}!")
                 continue
             }
         }

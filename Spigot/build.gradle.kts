@@ -54,10 +54,13 @@ tasks {
         dependencies {
             exclude(dependency("org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT"))
             exclude(dependency("com.google.guava:guava:21.0"))
+            exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib:1.5.31"))
+            exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31"))
+            exclude(dependency("org.jetbrains.kotlin:kotlin-reflect:1.5.31"))
             exclude(dependency(":SpigotProcessor"))
         }
 
-        destinationDir = file("C:/Users/Levi/Downloads/Spigot/plugins")
+        destinationDir = file("C:/Users/Levi/Downloads/SpigotTest/plugins")
         archiveBaseName.value("thebasics")
         archiveClassifier.value("spigot")
 

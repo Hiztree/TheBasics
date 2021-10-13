@@ -22,48 +22,19 @@
  * SOFTWARE.
  */
 
-package io.github.hiztree.thebasics.core.api
+package io.github.hiztree.thebasics.spigot.impl
 
-import io.github.hiztree.thebasics.core.api.cmd.sender.ConsoleSender
-import io.github.hiztree.thebasics.core.api.data.World
+import io.github.hiztree.thebasics.core.api.log.BasicLogLevel
 import io.github.hiztree.thebasics.core.api.log.BasicLogger
-import io.github.hiztree.thebasics.core.api.user.User
-import java.io.File
-import java.util.*
+import java.util.logging.Logger
 
-interface PluginContainer {
+class SpigotLogger(private val log: Logger) : BasicLogger {
 
-    val users: ArrayList<User>
-
-    fun init()
-
-    fun getUser(name: String = "", uniqueID: UUID? = null): User? {
-        if (name.isEmpty() && uniqueID != null) {
-            return users.firstOrNull { it.getUniqueID() == uniqueID }
+    override fun log(level: BasicLogLevel, msg: String) {
+        when (level) {
+            BasicLogLevel.INFO -> log.info(msg)
+            BasicLogLevel.WARN -> log.warning(msg)
+            BasicLogLevel.ERROR -> log.severe(msg)
         }
-
-        return users.firstOrNull { it.getName().equals(name, true) }
     }
-
-    fun getConsoleSender(): ConsoleSender
-
-    fun getImplementation(): Implementation
-
-    fun getConfigDir(): File {
-        return if (getImplementation() == Implementation.BUKKIT)
-            File("plugins/TheBasics")
-        else
-            File("config/thebasics")
-    }
-
-    fun getPlayerDir(): File {
-        return if (getImplementation() == Implementation.BUKKIT)
-            File("plugins/TheBasics/Players")
-        else
-            File("config/thebasics/players")
-    }
-
-    fun getWorld(uniqueID: UUID): World?
-
-    fun getLog(): BasicLogger
 }

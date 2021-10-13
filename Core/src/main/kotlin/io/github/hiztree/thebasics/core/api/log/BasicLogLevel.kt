@@ -22,21 +22,11 @@
  * SOFTWARE.
  */
 
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+package io.github.hiztree.thebasics.core.api.log
 
-plugins {
-    kotlin("jvm") version "1.5.31"
-    id("com.github.johnrengelman.shadow") version ("6.1.0")
-    java
-}
+enum class BasicLogLevel {
 
-group = "io.github.hiztree"
-version = "0.0.1"
-
-repositories {
-    mavenCentral()
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    INFO,
+    WARN,
+    ERROR
 }

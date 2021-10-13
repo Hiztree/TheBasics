@@ -26,9 +26,11 @@ package io.github.hiztree.thebasics.core.loader
 
 import com.google.common.collect.ImmutableSet
 import com.google.common.reflect.ClassPath
+import io.github.hiztree.thebasics.core.TheBasics
 import io.github.hiztree.thebasics.core.api.Loader
 import io.github.hiztree.thebasics.core.api.config.annotation.Section
 import io.github.hiztree.thebasics.core.api.config.annotation.Setting
+import java.util.*
 
 class ConfigLoader : Loader() {
 
@@ -49,7 +51,7 @@ class ConfigLoader : Loader() {
                     if (declaredField.isAnnotationPresent(Setting::class.java)) {
                         val setting = declaredField.getAnnotation(Setting::class.java)
                         val path =
-                            if (setting.path.isEmpty()) declaredField.name.toLowerCase() else setting.path
+                            if (setting.path.isEmpty()) declaredField.name.lowercase(Locale.getDefault()) else setting.path
                         val node = parentNode.node(path)
 
                         declaredField.isAccessible = true
@@ -71,6 +73,8 @@ class ConfigLoader : Loader() {
                 if (change)
                     section.type.getConfig().save()
             } catch (ignore: Exception) {
+                TheBasics.instance.getLog()
+                    .error("Could not load config class: ${info.simpleName}!")
                 continue
             }
         }

@@ -22,21 +22,37 @@
  * SOFTWARE.
  */
 
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+package io.github.hiztree.thebasics.core.api.log
 
-plugins {
-    kotlin("jvm") version "1.5.31"
-    id("com.github.johnrengelman.shadow") version ("6.1.0")
-    java
-}
+interface BasicLogger {
 
-group = "io.github.hiztree"
-version = "0.0.1"
+    /**
+     * Prints a message to console according to the level.
+     *
+     * @param level The level of log
+     * @param msg The message to log
+     */
+    fun log(level: BasicLogLevel, msg: String)
 
-repositories {
-    mavenCentral()
-}
+    /**
+     * Print an information message to console.
+     *
+     * @param msg The message to log
+     */
+    fun info(msg: String) = log(BasicLogLevel.INFO, msg)
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    /**
+     * Print an error message to console.
+     *
+     * @param msg The message to log
+     */
+    fun error(msg: String) = log(BasicLogLevel.ERROR, msg)
+
+    /**
+     * Print an warning message to console.
+     *
+     * @param msg The message to log
+     */
+    fun warn(msg: String) = log(BasicLogLevel.WARN, msg)
+
 }

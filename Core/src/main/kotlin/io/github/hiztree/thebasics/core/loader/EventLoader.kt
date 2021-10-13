@@ -41,7 +41,8 @@ class EventLoader : Loader() {
 
                 TheBasics.eventBus.register(loaded.newInstance())
             } catch (ex: Exception) {
-                //TODO
+                TheBasics.instance.getLog().error("Could not load event class: ${info.simpleName}!")
+                continue
             }
         }
 

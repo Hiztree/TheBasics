@@ -35,6 +35,7 @@ import io.github.hiztree.thebasics.core.api.inventory.item.BasicItem
 import io.github.hiztree.thebasics.core.api.inventory.item.ItemType
 import io.github.hiztree.thebasics.core.api.inventory.item.ItemTypes
 import io.github.hiztree.thebasics.core.api.inventory.item.extra.EnchantType
+import io.github.hiztree.thebasics.core.api.log.BasicLogger
 import io.github.hiztree.thebasics.core.api.user.User
 import io.github.hiztree.thebasics.spigot.impl.*
 import org.bukkit.Bukkit
@@ -58,10 +59,14 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.lang.reflect.Field
 import java.lang.reflect.InvocationTargetException
 import java.util.*
+import java.util.logging.Logger
 
 class SpigotContainer : JavaPlugin(), Listener {
 
+    private val log: Logger = logger
+
     private val core = object : TheBasics() {
+        val logger = SpigotLogger(log)
         val onlineUsers = Lists.newArrayList<User>()
         private val consoleSender = SpigotConsoleSender(Bukkit.getConsoleSender())
 
@@ -80,6 +85,10 @@ class SpigotContainer : JavaPlugin(), Listener {
             val bukkitWorld = Bukkit.getWorld(uniqueID) ?: return null
 
             return SpigotWorld(bukkitWorld)
+        }
+
+        override fun getLog(): BasicLogger {
+            return logger
         }
     }
 

@@ -4,3 +4,7 @@ api-version: 1.16
 main: io.github.hiztree.thebasics.spigot.SpigotContainer
 description: A set of basic functions for Spigot servers.
 author: Hiztree
+libraries:
+  - org.jetbrains.kotlin:kotlin-stdlib:1.5.3
+  - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.3
+  - org.jetbrains.kotlin:kotlin-reflect:1.5.3

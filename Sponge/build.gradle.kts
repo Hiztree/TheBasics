@@ -59,7 +59,7 @@ tasks {
             exclude(dependency("org.spongepowered:spongeapi:7.3.0"))
         }
 
-        destinationDir = file("C:/Users/Levi/Downloads/Sponge/mods")
+        destinationDir = file("C:/Users/Levi/Downloads/SpongeTest/plugins")
 
         archiveBaseName.value("thebasics")
         archiveClassifier.value("sponge")
