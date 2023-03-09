@@ -24,24 +24,18 @@
 
 package io.github.hiztree.thebasics.core.loader
 
-import com.google.common.collect.ImmutableSet
-import com.google.common.reflect.ClassPath
 import io.github.hiztree.thebasics.core.TheBasics
 import io.github.hiztree.thebasics.core.api.Loader
 import io.github.hiztree.thebasics.core.api.event.annotation.Listener
 
-class EventLoader : Loader() {
+class EventLoader(basic: TheBasics) : Loader(Listener::class.java) {
 
-    override fun load(set: ImmutableSet<ClassPath.ClassInfo>): Boolean {
-        for (info in set.stream().filter { info: ClassPath.ClassInfo ->
-            info.load().isAnnotationPresent(Listener::class.java)
-        }) {
+    override fun load(): Boolean {
+        for (loaded in registeredClasses) {
             try {
-                val loaded = info.load()
-
                 TheBasics.eventBus.register(loaded.newInstance())
             } catch (ex: Exception) {
-                TheBasics.instance.getLog().error("Could not load event class: ${info.simpleName}!")
+                TheBasics.instance.getLog().error("Could not load event class: ${loaded.simpleName}!")
                 continue
             }
         }

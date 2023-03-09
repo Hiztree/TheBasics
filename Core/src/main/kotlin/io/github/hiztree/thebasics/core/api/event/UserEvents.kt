@@ -46,17 +46,17 @@ open class UserChatEvent(user: User, var msg: String?) : UserCancellableEvent(us
 
 open class UserSleepEvent(user: User) : UserEvent(user)
 
-open class UserBreedEvent(user: User, val entityID: Int) : UserEvent(user)
+open class UserBreedEvent(user: User, val entityID: String) : UserEvent(user)
 
 open class UserDieEvent(user: User) : UserEvent(user)
 
 open class UserPickupItemEvent(user: User, val item: BasicItem) : UserEvent(user)
 
-open class UserKillMobEvent(user: User, val entityID: Int) : UserEvent(user)
+open class UserKillMobEvent(user: User, val entityID: String) : UserEvent(user)
 
 open class UserMoveEvent(user: User) : UserEvent(user)
 
-open class UserTameAnimalEvent(user: User, val entityID: Int) : UserEvent(user)
+open class UserTameAnimalEvent(user: User, val entityID: String) : UserEvent(user)
 
 open class ItemUseEvent(user: User, val item: BasicItem) : UserEvent(user)
 

@@ -24,24 +24,17 @@
 
 package io.github.hiztree.thebasics.core.loader
 
-import com.google.common.collect.ImmutableSet
-import com.google.common.reflect.ClassPath
 import io.github.hiztree.thebasics.core.TheBasics
 import io.github.hiztree.thebasics.core.api.Loader
 import io.github.hiztree.thebasics.core.api.config.annotation.Section
 import io.github.hiztree.thebasics.core.api.config.annotation.Setting
 import java.util.*
 
-class ConfigLoader : Loader() {
+class ConfigLoader(basic: TheBasics) : Loader(Section::class.java) {
 
-    override fun load(set: ImmutableSet<ClassPath.ClassInfo>): Boolean {
-        for (info in set.stream().filter { info: ClassPath.ClassInfo ->
-            val loaded = info.load()
-
-            loaded.isAnnotationPresent(Section::class.java)
-        }) {
+    override fun load(): Boolean {
+        for (loaded in registeredClasses) {
             try {
-                val loaded: Class<*> = info.load()
                 val section = loaded.getAnnotation(Section::class.java)
                 val parentNode = section.type.getConfig().getRootNode()
                 val instance = loaded.newInstance()
@@ -74,7 +67,7 @@ class ConfigLoader : Loader() {
                     section.type.getConfig().save()
             } catch (ignore: Exception) {
                 TheBasics.instance.getLog()
-                    .error("Could not load config class: ${info.simpleName}!")
+                    .error("Could not load config class: ${loaded.simpleName}!")
                 continue
             }
         }

@@ -36,6 +36,15 @@ import io.github.hiztree.thebasics.core.api.cmd.CommandSpec
 import io.github.hiztree.thebasics.core.api.config.BasicConfig
 import io.github.hiztree.thebasics.core.api.config.BasicSerializers
 import io.github.hiztree.thebasics.core.api.lang.LangKey
+import io.github.hiztree.thebasics.core.commands.*
+import io.github.hiztree.thebasics.core.configs.GeneralConfig
+import io.github.hiztree.thebasics.core.configs.KitConfig
+import io.github.hiztree.thebasics.core.listeners.UserListener
+import io.github.hiztree.thebasics.core.loader.CommandLoader
+import io.github.hiztree.thebasics.core.loader.ConfigLoader
+import io.github.hiztree.thebasics.core.loader.EventLoader
+import java.io.IOException
+
 
 abstract class TheBasics : PluginContainer {
 
@@ -80,19 +89,39 @@ abstract class TheBasics : PluginContainer {
         kitConfig = BasicConfig("kit.conf")
         dataConfig = BasicConfig("data.conf")
 
-        val registeredClasses = ClassPath.from(TheBasics::class.java.classLoader)
-            .getTopLevelClassesRecursive("io.github.hiztree.thebasics.core")
-
-        //Apply the loaders to all of the modules.
-        for (loadClasses in ClassPath.from(TheBasics::class.java.classLoader)
-            .getTopLevelClasses("io.github.hiztree.thebasics.core.loader")) {
-            val loadedClass = loadClasses.load().newInstance()
-
-            if (loadedClass is Loader) {
-                loadedClass.load(registeredClasses)
-            }
-        }
-
         LangKey.load()
+
+        //Register and load the commands.
+        val commandLoader = CommandLoader(this)
+        commandLoader.registerClass(BalanceCmd::class.java)
+        commandLoader.registerClass(FeedCmd::class.java)
+        commandLoader.registerClass(GamemodeCmd::class.java)
+        commandLoader.registerClass(GiveCmd::class.java)
+        commandLoader.registerClass(HealCmd::class.java)
+        commandLoader.registerClass(HomeCmd::class.java)
+        commandLoader.registerClass(KickCmd::class.java)
+        commandLoader.registerClass(KitCmd::class.java)
+        commandLoader.registerClass(MuteCmd::class.java)
+        commandLoader.registerClass(SetHomeCmd::class.java)
+        commandLoader.registerClass(SetSpawnCmd::class.java)
+        commandLoader.registerClass(SetWarpCmd::class.java)
+        commandLoader.registerClass(SpawnCmd::class.java)
+        commandLoader.registerClass(TeleportCmd::class.java)
+        commandLoader.registerClass(TeleportHereCmd::class.java)
+        commandLoader.registerClass(UnSetHomeCmd::class.java)
+        commandLoader.registerClass(WarpCmd::class.java)
+        commandLoader.registerClass(XPCmd::class.java)
+        commandLoader.load()
+
+        //Register and load the configs.
+        val configLoader = ConfigLoader(this)
+        configLoader.registerClass(GeneralConfig::class.java)
+        configLoader.registerClass(KitConfig::class.java)
+        configLoader.load()
+
+        //Register and load the events.
+        val eventLoader = EventLoader(this)
+        eventLoader.registerClass(UserListener::class.java)
+        eventLoader.load()
     }
 }

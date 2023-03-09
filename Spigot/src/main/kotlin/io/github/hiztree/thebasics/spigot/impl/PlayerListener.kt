@@ -84,7 +84,7 @@ class PlayerListener : Listener {
             TheBasics.eventBus.post(
                 UserBreedEvent(
                     user.toBasics(),
-                    event.entity.type.typeId.toInt()
+                    event.entity.type.name
                 )
             )
         }
@@ -112,7 +112,7 @@ class PlayerListener : Listener {
         if (event.damager is Player) {
             val user = event.damager as Player
 
-            TheBasics.eventBus.post(UserKillMobEvent(user.toBasics(), event.entity.entityId))
+            TheBasics.eventBus.post(UserKillMobEvent(user.toBasics(), event.entity.type.name))
         }
     }
 
@@ -126,7 +126,7 @@ class PlayerListener : Listener {
         val owner = event.owner
 
         if (owner is Player) {
-            TheBasics.eventBus.post(UserTameAnimalEvent(owner.toBasics(), event.entity.entityId))
+            TheBasics.eventBus.post(UserTameAnimalEvent(owner.toBasics(), event.entity.type.name))
         }
     }
 

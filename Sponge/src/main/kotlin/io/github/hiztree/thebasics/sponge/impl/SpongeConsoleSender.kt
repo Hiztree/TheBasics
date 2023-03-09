@@ -22,19 +22,28 @@
  * SOFTWARE.
  */
 
-package io.github.hiztree.thebasics.spigot.impl
+package io.github.hiztree.thebasics.sponge.impl
 
-import io.github.hiztree.thebasics.core.api.log.BasicLogLevel
-import io.github.hiztree.thebasics.core.api.log.BasicLogger
-import org.slf4j.Logger
+import io.github.hiztree.thebasics.core.api.cmd.sender.ConsoleSender
+import io.github.hiztree.thebasics.sponge.translateColor
+import org.spongepowered.api.SystemSubject
+import java.util.*
 
-class SpongeLogger(private val log: Logger) : BasicLogger {
+class SpongeConsoleSender(private val console: SystemSubject) : ConsoleSender {
 
-    override fun log(level: BasicLogLevel, msg: String) {
-        when (level) {
-            BasicLogLevel.INFO -> log.info(msg)
-            BasicLogLevel.WARN -> log.warn(msg)
-            BasicLogLevel.ERROR -> log.error(msg)
-        }
+    override fun getName(): String {
+        return "console"
+    }
+
+    override fun getUniqueID(): UUID {
+        return UUID.randomUUID()
+    }
+
+    override fun sendMsg(msg: String) {
+        console.sendMessage(msg.translateColor())
+    }
+
+    override fun hasPermission(permission: String): Boolean {
+        return true
     }
 }

@@ -22,28 +22,10 @@
  * SOFTWARE.
  */
 
-package io.github.hiztree.thebasics.spigot.impl
+package io.github.hiztree.thebasics.sponge.impl
 
-import io.github.hiztree.thebasics.core.api.cmd.sender.ConsoleSender
-import io.github.hiztree.thebasics.spigot.translateColor
-import org.spongepowered.api.command.source.ConsoleSource
-import java.util.*
+import org.spongepowered.api.world.World
+import org.spongepowered.api.world.server.ServerWorld
 
-class SpongeConsoleSender(private val console: ConsoleSource) : ConsoleSender {
-
-    override fun getName(): String {
-        return "console"
-    }
-
-    override fun getUniqueID(): UUID {
-        return UUID.randomUUID()
-    }
-
-    override fun sendMsg(msg: String) {
-        console.sendMessage(msg.translateColor())
-    }
-
-    override fun hasPermission(permission: String): Boolean {
-        return true
-    }
-}
+class SpongeWorld(base: ServerWorld) :
+    io.github.hiztree.thebasics.core.api.data.World(base.key().value(), base.uniqueId())

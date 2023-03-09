@@ -35,15 +35,17 @@ import io.github.hiztree.thebasics.core.api.user.data.Home
 class SetHomeCmd {
 
     @DefaultCmd
-    fun setHomeCmd(sender: User, @Arg("name") name: String) {
+    fun setHomeCmd(sender: User, @Arg("name", true) name: String?) {
+        val homeName = name ?: "default"
+
         if (sender.homes.find { it.name.equals(name, true) } != null) {
-            sender.sendMsg(LangKey.HOME_IS_EXIST_ERROR, name)
+            sender.sendMsg(LangKey.HOME_IS_EXIST_ERROR, homeName)
             return
         }
 
-        sender.homes.add(Home(name, sender.getLocation(), sender.getWorld()))
+        sender.homes.add(Home(homeName, sender.getLocation(), sender.getWorld()))
         sender.save()
 
-        sender.sendMsg(LangKey.SET_HOME, name)
+        sender.sendMsg(LangKey.SET_HOME, homeName)
     }
 }

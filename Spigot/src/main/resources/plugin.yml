@@ -1,10 +1,12 @@
 name: TheBasics
 version: 0.0.1
-api-version: 1.16
+api-version: 1.19
 main: io.github.hiztree.thebasics.spigot.SpigotContainer
 description: A set of basic functions for Spigot servers.
 author: Hiztree
 libraries:
-  - org.jetbrains.kotlin:kotlin-stdlib:1.5.3
-  - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.3
-  - org.jetbrains.kotlin:kotlin-reflect:1.5.3
+  - org.jetbrains.kotlin:kotlin-stdlib:1.7.21
+  - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.21
+  - org.jetbrains.kotlin:kotlin-reflect:1.7.21
+  - org.spongepowered:configurate-hocon:4.1.2
+  - org.spongepowered:configurate-extra-kotlin:4.1.2

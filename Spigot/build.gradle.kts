@@ -41,26 +41,26 @@ repositories {
 }
 
 dependencies {
-    compile("org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    compile(project(":Core"))
+    implementation(project(":Core"))
 }
 
 tasks {
     named<ShadowJar>("shadowJar") {
         relocate("kotlin", "io.github.hiztree.kotlin")
         dependencies {
-            exclude(dependency("org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT"))
-            exclude(dependency("com.google.guava:guava:21.0"))
-            exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib:1.5.31"))
-            exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31"))
-            exclude(dependency("org.jetbrains.kotlin:kotlin-reflect:1.5.31"))
+            exclude(dependency("org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT"))
+            exclude(dependency("com.google.guava:guava:31.1-jre"))
+            exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib:1.7.21"))
+            exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.21"))
+            exclude(dependency("org.jetbrains.kotlin:kotlin-reflect:1.7.21"))
             exclude(dependency(":SpigotProcessor"))
         }
 
-        destinationDir = file("C:/Users/Levi/Downloads/SpigotTest/plugins")
+        destinationDirectory.set(file("C:/Users/Levi/Downloads/SpigotTest/plugins"))
         archiveBaseName.value("thebasics")
         archiveClassifier.value("spigot")
 

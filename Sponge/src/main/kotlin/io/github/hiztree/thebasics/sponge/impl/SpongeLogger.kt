@@ -22,9 +22,19 @@
  * SOFTWARE.
  */
 
-package io.github.hiztree.thebasics.spigot.impl
+package io.github.hiztree.thebasics.sponge.impl
 
-import org.spongepowered.api.world.World
+import io.github.hiztree.thebasics.core.api.log.BasicLogLevel
+import io.github.hiztree.thebasics.core.api.log.BasicLogger
+import org.apache.logging.log4j.Logger
 
-class SpongeWorld(base: World) :
-    io.github.hiztree.thebasics.core.api.data.World(base.name, base.uniqueId)
+class SpongeLogger(private val log: Logger) : BasicLogger {
+
+    override fun log(level: BasicLogLevel, msg: String) {
+        when (level) {
+            BasicLogLevel.INFO -> log.info(msg)
+            BasicLogLevel.WARN -> log.warn(msg)
+            BasicLogLevel.ERROR -> log.error(msg)
+        }
+    }
+}

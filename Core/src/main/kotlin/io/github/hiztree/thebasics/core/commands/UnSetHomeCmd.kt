@@ -35,10 +35,12 @@ import io.github.hiztree.thebasics.core.api.user.data.Home
 class UnSetHomeCmd {
 
     @DefaultCmd
-    fun unSetHomeCmd(sender: User, @Arg("home") home: Home) {
-        sender.homes.remove(home)
+    fun unSetHomeCmd(sender: User, @Arg("home", true) home: Home?) {
+        val actualHome = home ?: sender.homes.firstOrNull() ?: return
+
+        sender.homes.remove(actualHome)
         sender.save()
 
-        sender.sendMsg(LangKey.UN_SET_HOME, home.name)
+        sender.sendMsg(LangKey.UN_SET_HOME, actualHome.name)
     }
 }

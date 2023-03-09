@@ -22,13 +22,15 @@
  * SOFTWARE.
  */
 
-package io.github.hiztree.thebasics.spigot.impl
+package io.github.hiztree.thebasics.sponge.impl
 
 import io.github.hiztree.thebasics.core.TheBasics
 import io.github.hiztree.thebasics.core.api.inventory.item.BasicItem
 import io.github.hiztree.thebasics.core.api.inventory.item.ItemTypes
-import io.github.hiztree.thebasics.spigot.toBasics
+import io.github.hiztree.thebasics.sponge.toBasics
+import org.spongepowered.api.block.transaction.Operations
 import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.entity.living.player.server.ServerPlayer
 import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.block.ChangeBlockEvent
 import org.spongepowered.api.event.filter.cause.First
@@ -36,31 +38,31 @@ import org.spongepowered.api.event.filter.cause.First
 class BlockListener {
 
     @Listener
-    fun onBreak(event: ChangeBlockEvent.Break, @First player: Player) {
-        val block = event.transactions.first()
+    fun blockEvent(event: ChangeBlockEvent.All, @First player: ServerPlayer) {
+        for (transaction in event.transactions()) {
+            transaction.operation()
+        }
+        val transaction = event.transactions().first()
+        val block = transaction.original()
 
-        val apiEvent = io.github.hiztree.thebasics.core.api.event.BlockBreakEvent(
-            player.toBasics(),
-            BasicItem(ItemTypes.getByName(block.original.state.type.name) ?: ItemTypes.AIR),
-            block.original.location.get().toBasics()
-        )
+        if(transaction.operation() == Operations.BREAK) {
+            val apiEvent = io.github.hiztree.thebasics.core.api.event.BlockBreakEvent(
+                player.toBasics(),
+                BasicItem(block.state().type().toBasics()),
+                block.location().get().toBasics()
+            )
 
-        TheBasics.eventBus.post(apiEvent)
-        event.isCancelled = apiEvent.cancel
-    }
+            TheBasics.eventBus.post(apiEvent)
+            event.isCancelled = apiEvent.cancel
+        } else if(transaction.operation() == Operations.PLACE) {
+            val apiEvent = io.github.hiztree.thebasics.core.api.event.BlockPlaceEvent(
+                player.toBasics(),
+                BasicItem(block.state().type().toBasics()),
+                block.location().get().toBasics()
+            )
 
-    @Listener
-    fun onPlace(event: ChangeBlockEvent.Place, @First player: Player) {
-        val block = event.transactions.first()
-
-
-        val apiEvent = io.github.hiztree.thebasics.core.api.event.BlockPlaceEvent(
-            player.toBasics(),
-            BasicItem(ItemTypes.getByName(block.original.state.type.name) ?: ItemTypes.AIR),
-            block.original.location.get().toBasics()
-        )
-
-        TheBasics.eventBus.post(apiEvent)
-        event.isCancelled = apiEvent.cancel
+            TheBasics.eventBus.post(apiEvent)
+            event.isCancelled = apiEvent.cancel
+        }
     }
 }

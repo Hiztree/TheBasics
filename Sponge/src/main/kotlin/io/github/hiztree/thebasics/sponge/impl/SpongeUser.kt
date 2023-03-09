@@ -22,29 +22,31 @@
  * SOFTWARE.
  */
 
-package io.github.hiztree.thebasics.spigot.impl
+package io.github.hiztree.thebasics.sponge.impl
 
 import io.github.hiztree.thebasics.core.api.data.Location
 import io.github.hiztree.thebasics.core.api.data.World
 import io.github.hiztree.thebasics.core.api.inventory.item.BasicItem
 import io.github.hiztree.thebasics.core.api.user.Gamemode
 import io.github.hiztree.thebasics.core.api.user.User
-import io.github.hiztree.thebasics.spigot.toBasics
-import io.github.hiztree.thebasics.spigot.toSponge
-import io.github.hiztree.thebasics.spigot.translateColor
-import org.spongepowered.api.data.key.Keys
-import org.spongepowered.api.entity.living.player.Player
+import io.github.hiztree.thebasics.sponge.toBasics
+import io.github.hiztree.thebasics.sponge.toSponge
+import io.github.hiztree.thebasics.sponge.translateColor
+import org.spongepowered.api.Sponge
+import org.spongepowered.api.data.Keys
 import org.spongepowered.api.entity.living.player.gamemode.GameModes
+import org.spongepowered.api.entity.living.player.server.ServerPlayer
+import org.spongepowered.api.registry.RegistryTypes
 import java.util.*
 
-class SpongeUser(private val base: Player) : User(base.uniqueId) {
+class SpongeUser(private val base: ServerPlayer) : User(base.uniqueId()) {
 
     override fun getName(): String {
-        return base.name
+        return base.name()
     }
 
     override fun getUniqueID(): UUID {
-        return base.uniqueId
+        return base.uniqueId()
     }
 
     override fun sendMsg(msg: String) {
@@ -72,7 +74,7 @@ class SpongeUser(private val base: Player) : User(base.uniqueId) {
     }
 
     override fun giveItem(item: BasicItem) {
-        base.inventory.offer(item.toSponge())
+        base.inventory().offer(item.toSponge())
     }
 
     override fun kick(reason: String) {
@@ -80,7 +82,7 @@ class SpongeUser(private val base: Player) : User(base.uniqueId) {
     }
 
     override fun getXP(): Int {
-        return base.get(Keys.TOTAL_EXPERIENCE).orElse(0)
+        return base.get(Keys.EXPERIENCE).orElse(0)
     }
 
     override fun getXPLevel(): Int {
@@ -88,7 +90,7 @@ class SpongeUser(private val base: Player) : User(base.uniqueId) {
     }
 
     override fun setXP(xp: Int) {
-        base.offer(Keys.TOTAL_EXPERIENCE, xp)
+        base.offer(Keys.EXPERIENCE, xp)
     }
 
     override fun setXPLevel(lvl: Int) {
@@ -96,27 +98,27 @@ class SpongeUser(private val base: Player) : User(base.uniqueId) {
     }
 
     override fun teleport(world: World, location: Location) {
-        base.location = location.toSponge(world.toSponge())
+        base.setLocation(location.toSponge(world.toSponge()))
     }
 
     override fun getLocation(): Location {
-        return base.location.toBasics()
+        return base.location().toBasics()
     }
 
     override fun getWorld(): World {
-        return base.world.toBasics()
+        return base.world().toBasics()
     }
 
     override fun getGamemode(): Gamemode {
-        return Gamemode.getByInput(base.gameMode().get().name)!!
+        return Gamemode.getByInput(Sponge.server().registry(RegistryTypes.GAME_MODE).findValueKey(base.gameMode().get()).get().formatted()) ?: Gamemode.SURVIVAL
     }
 
     override fun setGamemode(gamemode: Gamemode) {
         when (gamemode) {
-            Gamemode.ADVENTURE -> base.gameMode().set(GameModes.ADVENTURE)
-            Gamemode.SPECTATOR -> base.gameMode().set(GameModes.SPECTATOR)
-            Gamemode.SURVIVAL -> base.gameMode().set(GameModes.SURVIVAL)
-            Gamemode.CREATIVE -> base.gameMode().set(GameModes.CREATIVE)
+            Gamemode.ADVENTURE -> base.gameMode().set(GameModes.ADVENTURE.get())
+            Gamemode.SPECTATOR -> base.gameMode().set(GameModes.SPECTATOR.get())
+            Gamemode.SURVIVAL -> base.gameMode().set(GameModes.SURVIVAL.get())
+            Gamemode.CREATIVE -> base.gameMode().set(GameModes.CREATIVE.get())
         }
     }
 }

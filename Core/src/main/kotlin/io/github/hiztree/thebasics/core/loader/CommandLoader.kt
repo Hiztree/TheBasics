@@ -25,6 +25,7 @@
 package io.github.hiztree.thebasics.core.loader
 
 import com.google.common.collect.ImmutableSet
+import com.google.common.collect.Lists
 import com.google.common.reflect.ClassPath
 import io.github.hiztree.thebasics.core.TheBasics
 import io.github.hiztree.thebasics.core.api.Loader
@@ -33,18 +34,16 @@ import io.github.hiztree.thebasics.core.api.cmd.annotation.BasicCmd
 import io.github.hiztree.thebasics.core.api.cmd.annotation.DefaultCmd
 import io.github.hiztree.thebasics.core.api.cmd.annotation.SubCmd
 import io.github.hiztree.thebasics.core.api.cmd.sender.CommandSender
+import java.awt.SystemColor.info
 import java.lang.reflect.Method
 import java.lang.reflect.Parameter
 
-class CommandLoader : Loader() {
+class CommandLoader(container: TheBasics) : Loader(BasicCmd::class.java) {
 
-    override fun load(set: ImmutableSet<ClassPath.ClassInfo>): Boolean {
-        for (info in set.stream().filter { info: ClassPath.ClassInfo ->
-            info.load().isAnnotationPresent(BasicCmd::class.java)
-        }) {
+    override fun load(): Boolean {
+        for (loaded in registeredClasses) {
             try {
-                val loaded = info.load()
-                val instance = loaded.newInstance()
+                val instance = loaded.getDeclaredConstructor().newInstance()
 
                 val basicCmd = loaded.getAnnotation(BasicCmd::class.java)
 
@@ -73,7 +72,7 @@ class CommandLoader : Loader() {
                 TheBasics.instance.commands.add(defaultCmd)
             } catch (ex: ReflectiveOperationException) {
                 TheBasics.instance.getLog()
-                    .error("Could not load command class: ${info.simpleName}!")
+                    .error("Could not load command class: ${loaded.simpleName}!")
                 continue
             }
         }

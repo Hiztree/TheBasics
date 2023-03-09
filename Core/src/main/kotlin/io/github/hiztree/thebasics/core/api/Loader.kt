@@ -24,9 +24,20 @@
 
 package io.github.hiztree.thebasics.core.api
 
-import com.google.common.collect.ImmutableSet
-import com.google.common.reflect.ClassPath
+import com.google.common.collect.Lists
 
-abstract class Loader {
-    abstract fun load(set: ImmutableSet<ClassPath.ClassInfo>): Boolean
+/**
+ * T - the annotation type
+ */
+abstract class Loader(private val annotation: Class<out Annotation>) {
+
+    protected val registeredClasses: ArrayList<Class<out Any>> = Lists.newArrayList<Class<out Any>>()
+
+    fun registerClass(clazz: Class<out Any>) {
+        if(clazz.isAnnotationPresent(annotation)) {
+            registeredClasses.add(clazz)
+        }
+    }
+
+    abstract fun load(): Boolean
 }
