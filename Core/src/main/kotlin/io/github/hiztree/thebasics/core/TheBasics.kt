@@ -26,9 +26,7 @@ package io.github.hiztree.thebasics.core
 
 import com.google.common.collect.Lists
 import com.google.common.eventbus.EventBus
-import com.google.common.reflect.ClassPath
 import com.google.common.reflect.TypeToken
-import io.github.hiztree.thebasics.core.api.Loader
 import io.github.hiztree.thebasics.core.api.PluginContainer
 import io.github.hiztree.thebasics.core.api.cmd.CommandContext
 import io.github.hiztree.thebasics.core.api.cmd.CommandContexts
@@ -37,13 +35,13 @@ import io.github.hiztree.thebasics.core.api.config.BasicConfig
 import io.github.hiztree.thebasics.core.api.config.BasicSerializers
 import io.github.hiztree.thebasics.core.api.lang.LangKey
 import io.github.hiztree.thebasics.core.commands.*
+import io.github.hiztree.thebasics.core.configs.ChatConfig
 import io.github.hiztree.thebasics.core.configs.GeneralConfig
 import io.github.hiztree.thebasics.core.configs.KitConfig
 import io.github.hiztree.thebasics.core.listeners.UserListener
 import io.github.hiztree.thebasics.core.loader.CommandLoader
 import io.github.hiztree.thebasics.core.loader.ConfigLoader
 import io.github.hiztree.thebasics.core.loader.EventLoader
-import java.io.IOException
 
 
 abstract class TheBasics : PluginContainer {
@@ -53,6 +51,7 @@ abstract class TheBasics : PluginContainer {
     lateinit var generalConfig: BasicConfig
     lateinit var langConfig: BasicConfig
     lateinit var kitConfig: BasicConfig
+    lateinit var chatConfig: BasicConfig
     lateinit var dataConfig: BasicConfig
 
     companion object {
@@ -87,6 +86,7 @@ abstract class TheBasics : PluginContainer {
         generalConfig = BasicConfig("general.conf")
         langConfig = BasicConfig("lang.conf")
         kitConfig = BasicConfig("kit.conf")
+        chatConfig = BasicConfig("chat.conf")
         dataConfig = BasicConfig("data.conf")
 
         LangKey.load()
@@ -94,6 +94,7 @@ abstract class TheBasics : PluginContainer {
         //Register and load the commands.
         val commandLoader = CommandLoader(this)
         commandLoader.registerClass(BalanceCmd::class.java)
+        commandLoader.registerClass(BanCmd::class.java)
         commandLoader.registerClass(FeedCmd::class.java)
         commandLoader.registerClass(GamemodeCmd::class.java)
         commandLoader.registerClass(GiveCmd::class.java)
@@ -108,6 +109,9 @@ abstract class TheBasics : PluginContainer {
         commandLoader.registerClass(SpawnCmd::class.java)
         commandLoader.registerClass(TeleportCmd::class.java)
         commandLoader.registerClass(TeleportHereCmd::class.java)
+        commandLoader.registerClass(TempBanCmd::class.java)
+        commandLoader.registerClass(UnBanCmd::class.java)
+        commandLoader.registerClass(UnMuteCmd::class.java)
         commandLoader.registerClass(UnSetHomeCmd::class.java)
         commandLoader.registerClass(WarpCmd::class.java)
         commandLoader.registerClass(XPCmd::class.java)
@@ -115,6 +119,7 @@ abstract class TheBasics : PluginContainer {
 
         //Register and load the configs.
         val configLoader = ConfigLoader(this)
+        configLoader.registerClass(ChatConfig::class.java)
         configLoader.registerClass(GeneralConfig::class.java)
         configLoader.registerClass(KitConfig::class.java)
         configLoader.load()

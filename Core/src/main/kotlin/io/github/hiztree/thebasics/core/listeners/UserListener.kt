@@ -25,6 +25,8 @@
 package io.github.hiztree.thebasics.core.listeners
 
 import com.google.common.eventbus.Subscribe
+import io.github.hiztree.thebasics.core.TheBasics
+import io.github.hiztree.thebasics.core.api.data.ChatGroup
 import io.github.hiztree.thebasics.core.api.event.UserChatEvent
 import io.github.hiztree.thebasics.core.api.event.UserJoinEvent
 import io.github.hiztree.thebasics.core.api.event.UserQuitEvent
@@ -48,7 +50,18 @@ class UserListener {
     fun onChat(event: UserChatEvent) {
         if (event.user.isMuted()) {
             event.msg = null
+            event.cancel = true
             event.user.sendMsg(LangKey.MUTE_ATTEMPT)
+
+            return
+        }
+
+        if(event.user.chatGroup != ChatGroup.EMPTY && event.msg != null) {
+            event.cancel = true
+            
+            val msg = event.user.chatGroup.format(event.user, event.msg!!)
+
+            TheBasics.instance.users.forEach { it.sendMsg(msg) }
         }
     }
 
@@ -56,6 +69,7 @@ class UserListener {
     fun onCommand(event: UserChatEvent.Command) {
         if (event.user.isMuted()) {
             event.msg = null
+            event.cancel = true
             event.user.sendMsg(LangKey.MUTE_ATTEMPT)
         }
     }

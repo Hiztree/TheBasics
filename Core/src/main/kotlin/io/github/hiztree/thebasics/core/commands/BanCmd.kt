@@ -33,27 +33,28 @@ import io.github.hiztree.thebasics.core.api.cmd.annotation.BasicCmd
 import io.github.hiztree.thebasics.core.api.cmd.annotation.DefaultCmd
 import io.github.hiztree.thebasics.core.api.cmd.sender.CommandSender
 import io.github.hiztree.thebasics.core.api.lang.LangKey
+import io.github.hiztree.thebasics.core.api.user.OfflineUser
 import io.github.hiztree.thebasics.core.api.user.User
+import java.time.Instant
 
-@BasicCmd("mute", "Mute a user for a specific duration.")
-class MuteCmd {
+@BasicCmd("ban", "Ban a user permanently from the server.")
+class BanCmd {
 
     @DefaultCmd
-    fun muteCmd(
+    fun banCmd(
         sender: CommandSender,
-        @Arg("target") user: User,
-        @Arg("duration") duration: BasicTime,
+        @Arg("target") user: OfflineUser,
         @Arg("reason") reason: JoinedString
     ) {
-        if (user.isMuted())
-            throw UsageException(sender, LangKey.MUTE_ERROR)
+        if (user.isBanned())
+            throw UsageException(sender, LangKey.BAN_ERROR)
 
-        user.mute(duration, reason.toString())
+        user.ban(BasicTime.fromInstant(Instant.MAX), reason.toString())
 
-        sender.sendMsg(LangKey.MUTE_SENDER, user.getName(), duration.toString())
+        sender.sendMsg(LangKey.BAN_SENDER, user.getName(), "permanently")
 
         TheBasics.instance.users
-            .filter { it.hasPermission("thebasics.mute.notify") }
-            .forEach { it.sendMsg(LangKey.MUTE_NOTIFY, user.getName(), duration.toString()) }
+            .filter { it.hasPermission("thebasics.ban.notify") }
+            .forEach { it.sendMsg(LangKey.BAN_NOTIFY, user.getName(), "permanently") }
     }
 }

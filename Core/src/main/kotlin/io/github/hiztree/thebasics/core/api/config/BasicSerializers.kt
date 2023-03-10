@@ -25,6 +25,7 @@
 package io.github.hiztree.thebasics.core.api.config
 
 import io.github.hiztree.thebasics.core.TheBasics
+import io.github.hiztree.thebasics.core.api.data.ChatGroup
 import io.github.hiztree.thebasics.core.api.data.Kit
 import io.github.hiztree.thebasics.core.api.data.Location
 import io.github.hiztree.thebasics.core.api.data.Warp
@@ -157,6 +158,26 @@ object BasicSerializers {
                         node.node("name").set(obj.name)
                         node.node("world").set(obj.world?.uniqueID)
                         node.node("location").set(obj.location)
+                    }
+                }
+            }).register(ChatGroup::class.java, object : TypeSerializer<ChatGroup> {
+                override fun deserialize(type: Type?, node: ConfigurationNode): ChatGroup {
+                    val name = node.node("name").string ?: return ChatGroup.EMPTY
+                    val prefix = node.node("prefix").string ?: ""
+                    val suffix = node.node("suffix").string ?: ""
+                    val format = node.node("format").string ?: ""
+
+                    return ChatGroup(name, prefix, suffix, format)
+                }
+
+                override fun serialize(type: Type?, obj: ChatGroup?, node: ConfigurationNode) {
+                    if (obj == null) {
+                        node.set(null)
+                    } else {
+                        node.node("name").set(obj.name)
+                        node.node("prefix").set(obj.prefix)
+                        node.node("suffix").set(obj.suffix)
+                        node.node("format").set(obj.format)
                     }
                 }
             }).build()

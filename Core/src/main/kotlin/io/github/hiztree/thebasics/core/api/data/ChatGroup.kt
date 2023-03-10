@@ -22,28 +22,24 @@
  * SOFTWARE.
  */
 
-package io.github.hiztree.thebasics.core.api.config
+package io.github.hiztree.thebasics.core.api.data
 
-import io.github.hiztree.thebasics.core.TheBasics
+import io.github.hiztree.thebasics.core.api.user.User
 
-enum class ConfigType {
+data class ChatGroup(
+    val name: String,
+    val prefix: String,
+    val suffix: String,
+    val format: String
+) {
+    fun format(user: User, msg: String): String {
+        return format.replace("{PREFIX}", prefix, true)
+            .replace("{SUFFIX}", suffix, true)
+            .replace("{NAME}", user.getName(), true)
+            .replace("{MESSAGE}", msg, true)
+    }
 
-    GENERAL {
-        override fun getConfig(): BasicConfig {
-            return TheBasics.instance.generalConfig
-        }
-    },
-    KIT {
-        override fun getConfig(): BasicConfig {
-            return TheBasics.instance.kitConfig
-        }
-    },
-    CHAT {
-        override fun getConfig(): BasicConfig {
-            return TheBasics.instance.chatConfig
-        }
-    };
-
-    abstract fun getConfig(): BasicConfig
-
+    companion object {
+        val EMPTY: ChatGroup = ChatGroup("EMPTY", "", "", "")
+    }
 }

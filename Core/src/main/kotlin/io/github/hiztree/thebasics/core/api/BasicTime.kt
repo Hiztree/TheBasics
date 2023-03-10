@@ -24,7 +24,9 @@
 
 package io.github.hiztree.thebasics.core.api
 
+import java.time.Duration
 import java.time.Instant
+import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
 
 class BasicTime {
@@ -107,6 +109,18 @@ class BasicTime {
                     }
                 }
             }
+
+            return bs
+        }
+
+        fun fromInstant(instant: Instant) : BasicTime {
+            val bs = BasicTime()
+            val duration = Duration.between(Instant.now(), instant)
+
+            bs.days = duration.get(ChronoUnit.DAYS)
+            bs.hours = duration.get(ChronoUnit.HOURS)
+            bs.minutes = duration.get(ChronoUnit.MINUTES)
+            bs.seconds = duration.get(ChronoUnit.SECONDS)
 
             return bs
         }

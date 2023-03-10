@@ -27,6 +27,7 @@ package io.github.hiztree.thebasics.core.api.lang
 import io.github.hiztree.thebasics.core.TheBasics
 import java.text.DecimalFormat
 import java.time.Duration
+import java.util.*
 import kotlin.time.ExperimentalTime
 import kotlin.time.toKotlinDuration
 
@@ -45,9 +46,20 @@ enum class LangKey(private val default: String) {
     INVALID_ITEM("&cYou have specified an invalid item!"),
     KICK_NOTIFY("&cThe user &7{0} &chas been kicked from the server."),
     MUTE_NOTIFY("&cThe user &7{0} &chas been muted for &7{1}&c."),
-    MUTE_ERROR("&cThat user is already muted!."),
+    MUTE_ERROR("&cThat user is already muted!"),
+    MUTE_SENDER("&cYou muted the user &7{0} &cfor &7{0}&c!"),
     MUTED("&cYou have been muted for &7{0} &cfor &7{1}&c."),
     MUTE_ATTEMPT("&cYou are still muted and cannot talk or use commands."),
+    UN_MUTE("&cYou have been unmuted."),
+    UN_MUTE_SENDER("&cYou have unmuted &7{0}&c."),
+    UN_MUTE_ERROR("&cThat user is not muted!"),
+    BAN_NOTIFY("&cThe user &7{0} &chas been banned for &7{1}&c."),
+    BAN_ERROR("&cThat user is already banned!"),
+    BAN_SENDER("&cYou banned the user &7{0} &cfor &7{0}&c!"),
+    BANNED("&cYou have been baned for &7{0} &cfor &7{1}&c."),
+    BAN_ATTEMPT("&cYou are still banned and cannot join for &7{0}&c."),
+    UN_BAN_SENDER("&cYou have unbanned &7{0}&c."),
+    UN_BAN_ERROR("&cThat user is not banned!"),
     XP("&7The player &6{0} &7xp is &6{1} &7and level is &6{2}&7."),
     XP_GIVE_SENDER("&7You gave &6{0} &7levels to &6{1}&7."),
     XP_GIVE_TARGET("&7You received &6{0} &7levels."),
@@ -140,4 +152,7 @@ fun Duration.pretty(): String =
 
 fun Number.pretty(): String = LangKey.decimalFormat.format(this)
 fun String.toCamelCase() =
-    toLowerCase().split('_').joinToString("", transform = String::capitalize).decapitalize()
+    lowercase().split('_').joinToString("", transform = String::makeCapital).makeDeCapital()
+
+fun String.makeCapital() = replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+fun String.makeDeCapital() = replaceFirstChar { it.lowercase() }

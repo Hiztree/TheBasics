@@ -32,7 +32,7 @@ import java.util.*
 
 abstract class UserEvent(val user: User)
 
-abstract class UserCancellableEvent(user: User, val cancel: Boolean = false) : UserEvent(user)
+abstract class UserCancellableEvent(user: User, var cancel: Boolean = false) : UserEvent(user)
 
 open class UserPreJoinEvent(val uuid: UUID)
 

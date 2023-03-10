@@ -24,17 +24,24 @@
 
 package io.github.hiztree.thebasics.core.api.user
 
+import io.github.hiztree.thebasics.core.TheBasics
+import io.github.hiztree.thebasics.core.api.BasicTime
 import io.github.hiztree.thebasics.core.api.config.BasicConfig
 import io.github.hiztree.thebasics.core.api.config.Serializable
 import io.github.hiztree.thebasics.core.api.econ.AccountHolder
 import io.github.hiztree.thebasics.core.api.econ.ResultType
+import io.github.hiztree.thebasics.core.api.lang.LangKey
+import io.github.hiztree.thebasics.core.api.user.data.Home
 import io.github.hiztree.thebasics.core.configs.GeneralConfig
+import java.time.Duration
+import java.time.Instant
 import java.util.*
 
-abstract class OfflineUser(uniqueId: UUID) : AccountHolder, Serializable, BasicConfig(
+abstract class OfflineUser(private val uniqueId: UUID) : AccountHolder, Serializable, BasicConfig(
     "${uniqueId}.conf",
     io.github.hiztree.thebasics.core.TheBasics.instance.getPlayerDir()
 ) {
+    private var banEnd: Instant? = null
 
     abstract fun getName(): String
 
@@ -67,5 +74,61 @@ abstract class OfflineUser(uniqueId: UUID) : AccountHolder, Serializable, BasicC
         setBalance(currentBalance + balance)
 
         return ResultType.SUCCESS
+    }
+
+    fun isOnline() : Boolean {
+        return TheBasics.instance.getUser(uniqueID = uniqueId) != null
+    }
+
+    fun getOnlineUser() : User? {
+        return TheBasics.instance.getUser(uniqueID = uniqueId)
+    }
+
+    fun isBanned(): Boolean {
+        if (banEnd != null) {
+            if (Duration.between(Instant.now(), banEnd).isNegative) {
+                banEnd = null
+                return false
+            }
+
+            return true
+        }
+
+        return false
+    }
+
+    fun ban(duration: BasicTime?, reason: String) {
+        if(duration == null) {
+            banEnd = null
+            save()
+
+            return
+        }
+
+        banEnd = duration.toInstant()
+        save()
+
+        val onlineUser = getOnlineUser()
+
+        if(onlineUser != null) {
+            if (banEnd == Instant.MAX) {
+                onlineUser.kick(LangKey.BANNED.parse("permanently", reason))
+            } else {
+                onlineUser.kick(LangKey.BANNED.parse(duration.toString(), reason))
+            }
+        }
+    }
+
+    override fun save() {
+        serialize()
+        super.save()
+    }
+
+    override fun serialize() {
+        this["banEnd"].set(banEnd)
+    }
+
+    override fun deserialize() {
+        this.banEnd = this["banEnd"].get(Instant::class.java)
     }
 }

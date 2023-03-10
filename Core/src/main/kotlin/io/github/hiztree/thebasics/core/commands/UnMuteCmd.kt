@@ -22,28 +22,31 @@
  * SOFTWARE.
  */
 
-package io.github.hiztree.thebasics.core.api.config
+package io.github.hiztree.thebasics.core.commands
 
 import io.github.hiztree.thebasics.core.TheBasics
+import io.github.hiztree.thebasics.core.api.BasicTime
+import io.github.hiztree.thebasics.core.api.cmd.JoinedString
+import io.github.hiztree.thebasics.core.api.cmd.UsageException
+import io.github.hiztree.thebasics.core.api.cmd.annotation.Arg
+import io.github.hiztree.thebasics.core.api.cmd.annotation.BasicCmd
+import io.github.hiztree.thebasics.core.api.cmd.annotation.DefaultCmd
+import io.github.hiztree.thebasics.core.api.cmd.sender.CommandSender
+import io.github.hiztree.thebasics.core.api.lang.LangKey
+import io.github.hiztree.thebasics.core.api.user.User
 
-enum class ConfigType {
+@BasicCmd("unmute", "Removes a user from being muted.")
+class UnMuteCmd {
 
-    GENERAL {
-        override fun getConfig(): BasicConfig {
-            return TheBasics.instance.generalConfig
-        }
-    },
-    KIT {
-        override fun getConfig(): BasicConfig {
-            return TheBasics.instance.kitConfig
-        }
-    },
-    CHAT {
-        override fun getConfig(): BasicConfig {
-            return TheBasics.instance.chatConfig
-        }
-    };
+    @DefaultCmd
+    fun unMuteCmd(
+        sender: CommandSender,
+        @Arg("target") user: User,
+    ) {
+        if (!user.isMuted())
+            throw UsageException(sender, LangKey.UN_MUTE_ERROR)
 
-    abstract fun getConfig(): BasicConfig
-
+        user.mute(null, "")
+        sender.sendMsg(LangKey.UN_MUTE_SENDER, user.getName())
+    }
 }

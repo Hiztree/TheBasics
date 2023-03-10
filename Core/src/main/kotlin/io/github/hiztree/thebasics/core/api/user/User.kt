@@ -27,6 +27,7 @@ package io.github.hiztree.thebasics.core.api.user
 import com.google.common.collect.Maps
 import io.github.hiztree.thebasics.core.api.BasicTime
 import io.github.hiztree.thebasics.core.api.cmd.sender.CommandSender
+import io.github.hiztree.thebasics.core.api.data.ChatGroup
 import io.github.hiztree.thebasics.core.api.data.Kit
 import io.github.hiztree.thebasics.core.api.data.Location
 import io.github.hiztree.thebasics.core.api.data.World
@@ -34,6 +35,7 @@ import io.github.hiztree.thebasics.core.api.inventory.item.BasicItem
 import io.github.hiztree.thebasics.core.api.lang.LangKey
 import io.github.hiztree.thebasics.core.api.lang.pretty
 import io.github.hiztree.thebasics.core.api.user.data.Home
+import io.github.hiztree.thebasics.core.configs.ChatConfig
 import java.time.Duration
 import java.time.Instant
 import java.util.*
@@ -46,8 +48,12 @@ abstract class User(uniqueId: UUID) : OfflineUser(uniqueId), CommandSender {
 
     val homes: MutableList<Home> = mutableListOf()
 
+    var chatGroup: ChatGroup = ChatGroup.EMPTY
+
     init {
         deserialize()
+
+        chatGroup = ChatConfig.chatGroups.lastOrNull { hasPermission("thebasics.chatgroup.${it.name}") } ?: ChatGroup.EMPTY
     }
 
     @OptIn(ExperimentalTime::class)
@@ -106,7 +112,15 @@ abstract class User(uniqueId: UUID) : OfflineUser(uniqueId), CommandSender {
         return false
     }
 
-    fun mute(duration: BasicTime, reason: String) {
+    fun mute(duration: BasicTime?, reason: String) {
+        if(duration == null) {
+            muteEnd = null
+            save()
+
+            sendMsg(LangKey.UN_MUTE)
+            return
+        }
+
         muteEnd = duration.toInstant()
         save()
 
@@ -140,12 +154,9 @@ abstract class User(uniqueId: UUID) : OfflineUser(uniqueId), CommandSender {
 
     abstract fun setGamemode(gamemode: Gamemode)
 
-    override fun save() {
-        serialize()
-        super.save()
-    }
-
     override fun serialize() {
+        super.serialize()
+
         this["muteEnd"].set(muteEnd)
         this["homes"].setList(Home::class.java, homes)
 
@@ -155,6 +166,8 @@ abstract class User(uniqueId: UUID) : OfflineUser(uniqueId), CommandSender {
     }
 
     override fun deserialize() {
+        super.deserialize()
+
         this.muteEnd = this["muteEnd"].get(Instant::class.java)
         this.homes.addAll(
             this["homes"].getList(Home::class.java)?.toMutableList() ?: mutableListOf()

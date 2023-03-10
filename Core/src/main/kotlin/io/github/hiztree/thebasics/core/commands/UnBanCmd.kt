@@ -22,28 +22,28 @@
  * SOFTWARE.
  */
 
-package io.github.hiztree.thebasics.core.api.config
+package io.github.hiztree.thebasics.core.commands
 
-import io.github.hiztree.thebasics.core.TheBasics
+import io.github.hiztree.thebasics.core.api.cmd.UsageException
+import io.github.hiztree.thebasics.core.api.cmd.annotation.Arg
+import io.github.hiztree.thebasics.core.api.cmd.annotation.BasicCmd
+import io.github.hiztree.thebasics.core.api.cmd.annotation.DefaultCmd
+import io.github.hiztree.thebasics.core.api.cmd.sender.CommandSender
+import io.github.hiztree.thebasics.core.api.lang.LangKey
+import io.github.hiztree.thebasics.core.api.user.OfflineUser
 
-enum class ConfigType {
+@BasicCmd("unban", "Removes a user from being banned.")
+class UnBanCmd {
 
-    GENERAL {
-        override fun getConfig(): BasicConfig {
-            return TheBasics.instance.generalConfig
-        }
-    },
-    KIT {
-        override fun getConfig(): BasicConfig {
-            return TheBasics.instance.kitConfig
-        }
-    },
-    CHAT {
-        override fun getConfig(): BasicConfig {
-            return TheBasics.instance.chatConfig
-        }
-    };
+    @DefaultCmd
+    fun unBanCmd(
+        sender: CommandSender,
+        @Arg("target") user: OfflineUser,
+    ) {
+        if (!user.isBanned())
+            throw UsageException(sender, LangKey.UN_BAN_ERROR)
 
-    abstract fun getConfig(): BasicConfig
-
+        user.ban(null, "")
+        sender.sendMsg(LangKey.UN_BAN_SENDER, user.getName())
+    }
 }

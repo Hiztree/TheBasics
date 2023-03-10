@@ -22,28 +22,19 @@
  * SOFTWARE.
  */
 
-package io.github.hiztree.thebasics.core.api.config
+package io.github.hiztree.thebasics.core.configs
 
-import io.github.hiztree.thebasics.core.TheBasics
+import io.github.hiztree.thebasics.core.api.config.ConfigType
+import io.github.hiztree.thebasics.core.api.config.annotation.Section
+import io.github.hiztree.thebasics.core.api.config.annotation.Setting
+import io.github.hiztree.thebasics.core.api.data.ChatGroup
+import io.github.hiztree.thebasics.core.api.data.Kit
 
-enum class ConfigType {
+@Section(ConfigType.CHAT)
+class ChatConfig {
 
-    GENERAL {
-        override fun getConfig(): BasicConfig {
-            return TheBasics.instance.generalConfig
-        }
-    },
-    KIT {
-        override fun getConfig(): BasicConfig {
-            return TheBasics.instance.kitConfig
-        }
-    },
-    CHAT {
-        override fun getConfig(): BasicConfig {
-            return TheBasics.instance.chatConfig
-        }
-    };
-
-    abstract fun getConfig(): BasicConfig
-
+    companion object {
+        @Setting(comment = "Enter your chat groups here. Go from least important to most important. Ex: member, mod, admin, owner.")
+        var chatGroups = arrayListOf<ChatGroup>()
+    }
 }
